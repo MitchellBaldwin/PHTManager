@@ -13,6 +13,8 @@ namespace PHTManager
 {
     public partial class PHTManagerMain : Form
     {
+        // Test comment
+
         // Defines
         public const Byte CommStartByte = 0xF0;             // Identifies the start of a message packet
 
