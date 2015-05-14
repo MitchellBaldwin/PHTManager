@@ -49,7 +49,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="ZedGraph">
-      <HintPath>..\..\..\Users\Mitchell\Documents\Visual Studio 2013\Projects\CodeProject\ZedGraph\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+      <HintPath>..\..\..\Users\Mitchell\Documents\Visual Studio 2013\Projects\CodeProject\zedgraph_dll_v515\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

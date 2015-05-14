@@ -1,4 +1,4 @@
-// PERMISSIVE HYPERTENSION MONITORING DEVICE (PHTMD) Embedded Controller Module
+// PERMISSIVE HYPERTENSION MONITORING DEVICE (PHTMD) Embedded Controller Interrupt Service Routines
 // Mitch Baldwin	RMBIMedical	for U of M CIRCC	24 Apr 2015
 // v 1.0
 

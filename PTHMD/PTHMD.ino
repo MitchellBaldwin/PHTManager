@@ -1,5 +1,7 @@
-// Arduino timer CTC interrupt example
-// www.engblaze.com
+// PERMISSIVE HYPERTENSION MONITORING DEVICE (PHTMD) Embedded Controller Main
+// Mitch Baldwin	RMBIMedical	for U of M CIRCC	24 Apr 2015
+// v 1.0
+// Base timer code from: Arduino timer CTC interrupt example (www.engblaze.com)
 
 // avr-libc library includes
 #include <avr/io.h>
@@ -77,7 +79,7 @@ int targetCP = 0;					// Target cuff pressure - raw ACD equivalent value
 
 int loopHalfPeriod = 250;			// Main loop period / 2 (ms) - can be set by Host
 
-boolean dataFeedActive = true;		// flag to turn data feed to host on or off
+boolean dataFeedActive = false;		// flag to turn data feed to host on or off
 
 // Regards Serial OutPut  -- Set This Up to your needs
 static boolean serialVisual = false;   // Set to 'false' by Default.  Re-set to 'true' to see Arduino Serial Monitor ASCII Visual Pulse 
@@ -239,9 +241,35 @@ void loop()
 			}
 			break;
 
-		case 0x02:
-			// Toggle flag indicating whether or not to send data to the Host
-			dataFeedActive = !dataFeedActive;
+		case 0x02:		// Start serial data feed to host
+			// Set flag indicating whether or not to send data to the Host
+			dataFeedActive = true;
+			break;
+
+		case 0x03:		// Stop serial data feed to host
+			// Set flag indicating whether or not to send data to the Host
+			dataFeedActive = false;
+			
+			// If we're turning off the data feed then clear the serial transmission buffer
+			//to help ensure frame synchronization when transmission is restarted
+			Serial.flush();		// Wait for the hardware serial transmission buffer to clear
+			
+			break;
+
+		case 0x04:		// Latch LS1 ON
+			LS1ON();
+			break;
+
+		case 0x05:		// Latch LS1 OFF
+			LS1OFF();
+			break;
+
+		case 0x06:		// Latch LS2 ON
+			LS2ON();
+			break;
+
+		case 0x07:		// Latch LS2 OFF
+			LS2OFF();
 			break;
 
 		case 0x08:	// SetLoopPeriodMsgType
@@ -251,11 +279,12 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to set cuff fill solenoid on
-			digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
-			ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
-
+			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to set cuff fill solenoid on
+			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
+			LS1ON();								// Connect LS1 to pump
+			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
+			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
+			LS2ON();								// Connect cuff to LS1
 			pumpSpeed = inBuffer[0x02];				// Set initial pump speed
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -267,12 +296,13 @@ void loop()
 
 			break;
 
-		case 0x11:	// HoldCuffMsgTypee
-			ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
-			digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
-			ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
-			
+		case 0x11:	// HoldCuffMsgType
+			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS1 to pump
+			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
+			LS1ON();								// Connect LS1 to pump
+			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
+			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
+			LS2ON();								// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -281,11 +311,13 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
-			digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
-			ls2OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to bleed port
-			digitalWrite(LS2_OFF_PIN, 1);			// Set the LS2 OFF control pin high to latch LS2 to OFF position
-			
+			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
+			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
+			LS1ON();								// Conncet LS1 to pump
+			//ls2OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to bleed port
+			//digitalWrite(LS2_OFF_PIN, 1);			// Set the LS2 OFF control pin high to latch LS2 to OFF position
+			LS2OFF();								// Connect cuff to bleed port
+
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -297,11 +329,13 @@ void loop()
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			ls1OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to atmosphere
-			digitalWrite(LS1_OFF_PIN, 1);			// Set the LS1 OFF control pin high to latch LS1 to OFF position
-			ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
-			
+			//ls1OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to atmosphere
+			//digitalWrite(LS1_OFF_PIN, 1);			// Set the LS1 OFF control pin high to latch LS1 to OFF position
+			LS1OFF();								// Connect LS2 to atmosphere
+			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
+			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
+			LS2ON();								// Connect cuff to LS1
+
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -326,10 +360,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
-				digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
-				ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-				digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
+				LS1ON();								// Connect LS1 to pump
+				LS2ON();								// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -349,10 +381,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
-				digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
-				ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-				digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
+				LS1ON();								// Connect LS1 to pump
+				LS2ON();								// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -403,8 +433,6 @@ void loop()
 		Serial.write(outBuffer, COMM_BUFFER_SIZE);
 		newSensorData = false;
 	}
-
-
 
 	// Uncomment the following line to enable the fader pin
 	//ledFadeToBeat();                    // Makes the LED Fade Effect Happen 

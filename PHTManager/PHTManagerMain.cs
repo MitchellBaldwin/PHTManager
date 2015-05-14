@@ -20,7 +20,8 @@ namespace PHTManager
 
         public const Byte TextMsgMsgType = 0x00;            // The packet contains a text message (bi-directional)
         public const Byte SetModeMsgType = 0x01;            // The packet is a Set Mode command (Host to PHTMD)
-        public const Byte ToggleDataFeed = 0x02;            // Toggle the serial data stream from the PHTM device ON/OFF (Host to PHTMD)
+        public const Byte StartDataFeed = 0x02;             // Start the serial data stream from the PHTM device (Host to PHTMD)
+        public const Byte StopDataFeed = 0x03;              // Stop the serial data stream from the PHTM device (Host to PHTMD)
 
         public const Byte SetLoopPeriodMsgType = 0x08;      // Sets the main loop delay time (Host to PHTMD)
 
@@ -50,6 +51,8 @@ namespace PHTManager
         ZedGraph.PointPairList CuffPIDList = new ZedGraph.PointPairList();
         ZedGraph.LineItem CuffPIDLine;
 
+        // Flag indicating whether the data feed from the embedded system is active
+        //(set in the DataReceived event handler)
         Boolean dataFeedActive = false;
         public Boolean DataFeedActive
         {
@@ -223,6 +226,12 @@ namespace PHTManager
             {
                 if (PHMSerialPort.IsOpen)
                 {
+                    // If the serial port is open and the data feed is active then stop the data feed before closing the port
+                    BuildCommMessage(StopDataFeed, dummy);
+                    SendCommandMessage();
+                    // Give the serial port and embedded system time to process the message to stop the data feed
+                    System.Threading.Thread.Sleep(1000);
+
                     PHMSerialPort.Close();
                     PHMMainTimer.Enabled = false;
                     testModeCheckBox.Enabled = false;
@@ -485,8 +494,17 @@ namespace PHTManager
 
         private void startStopDataToolStripButton_Click(object sender, EventArgs e)
         {
-            BuildCommMessage(ToggleDataFeed, dummy);
-            SendCommandMessage();
+            if (DataFeedActive)
+            {
+                BuildCommMessage(StopDataFeed, dummy);
+                SendCommandMessage();
+                DataFeedActive = false;
+            }
+            else
+            {
+                BuildCommMessage(StartDataFeed, dummy);
+                SendCommandMessage();
+            }
         }
 
         private void PHTManagerMain_FormClosing(object sender, FormClosingEventArgs e)

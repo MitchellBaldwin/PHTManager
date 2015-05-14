@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="PTHMD.ino" />
     <None Include="Interrupts.ino" />
+    <None Include="LSControlFunctions.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visual Micro\.PTHMD.vsarduino.h">
