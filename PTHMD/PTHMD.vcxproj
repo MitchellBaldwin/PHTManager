@@ -72,7 +72,9 @@
     <None Include="Interrupts.ino">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="LSControlFunctions.ino" />
+    <None Include="LSControlFunctions.ino">
+      <FileType>CppCode</FileType>
+    </None>
     <None Include="PTHMD.ino">
       <FileType>CppCode</FileType>
     </None>

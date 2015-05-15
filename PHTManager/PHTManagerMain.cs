@@ -22,6 +22,10 @@ namespace PHTManager
         public const Byte SetModeMsgType = 0x01;            // The packet is a Set Mode command (Host to PHTMD)
         public const Byte StartDataFeed = 0x02;             // Start the serial data stream from the PHTM device (Host to PHTMD)
         public const Byte StopDataFeed = 0x03;              // Stop the serial data stream from the PHTM device (Host to PHTMD)
+        public const Byte LS1ONMsgType = 0x04;              // Connect LS2 to pump
+        public const Byte LS1OFFMsgType = 0x05;             // Connect LS2 to atmosphere
+        public const Byte LS2ONMsgType = 0x06;              // Connect cuff to LS1
+        public const Byte LS2OFFMsgType = 0x07;             // Connect cuff to bleed port
 
         public const Byte SetLoopPeriodMsgType = 0x08;      // Sets the main loop delay time (Host to PHTMD)
 
@@ -572,6 +576,30 @@ namespace PHTManager
         private void reperfuseButton_Click(object sender, EventArgs e)
         {
             BuildCommMessage(VentCuffMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS1ONButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS1ONMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS1OFFButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS1OFFMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS2ONButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS2ONMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS2OFFButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS2OFFMsgType, dummy);
             SendCommandMessage();
         }
 
