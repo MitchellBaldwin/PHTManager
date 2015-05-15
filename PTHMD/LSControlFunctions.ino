@@ -11,7 +11,7 @@ void LS1ON()
 void LS1OFF()
 {
 	ls1OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS1 to atmosphere
-	digitalWrite(LS1_OFF_PIN, 0);			// Set the LS1 OFF control pin high to latch LS1 to OFF position
+	digitalWrite(LS1_OFF_PIN, 1);			// Set the LS1 OFF control pin high to latch LS1 to OFF position
 	ls1IsON = false;						// Set flag indicating LS1 is OFF
 }
 
@@ -25,6 +25,6 @@ void LS2ON()
 void LS2OFF()
 {
 	ls2OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to bleed port
-	digitalWrite(LS2_OFF_PIN, 0);			// Set the LS2 OFF control pin high to latch LS2 to OFF position
+	digitalWrite(LS2_OFF_PIN, 1);			// Set the LS2 OFF control pin high to latch LS2 to OFF position
 	ls2IsON = false;						// Set flag indicating LS2 is OFF
 }
