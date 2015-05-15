@@ -84,16 +84,22 @@
             this.startStopDataToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveDataToFileToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PHTMSaveDataFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.TestControlPanel = new System.Windows.Forms.Panel();
             this.pulseLS1ONButton = new System.Windows.Forms.Button();
-            this.pulseLS1OFFButton = new System.Windows.Forms.Button();
             this.pulseLS2OFFButton = new System.Windows.Forms.Button();
+            this.pulseLS1OFFButton = new System.Windows.Forms.Button();
             this.pulseLS2ONButton = new System.Windows.Forms.Button();
+            this.rawTargetPressureLabel = new System.Windows.Forms.Label();
+            this.rawTargetPressureDisplayLabel = new System.Windows.Forms.Label();
+            this.pumpPIDNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
             this.targeyPressurePanel.SuspendLayout();
             this.systemPanel.SuspendLayout();
             this.PHTMMainToolStrip.SuspendLayout();
+            this.TestControlPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pumpPIDNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // cuffPressureDisplayPanel
@@ -734,63 +740,110 @@
             this.PHTMSaveDataFileDialog.FileName = "PHTMData0000";
             this.PHTMSaveDataFileDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
             // 
+            // TestControlPanel
+            // 
+            this.TestControlPanel.Controls.Add(this.pulseLS1ONButton);
+            this.TestControlPanel.Controls.Add(this.pulseLS2OFFButton);
+            this.TestControlPanel.Controls.Add(this.pulseLS1OFFButton);
+            this.TestControlPanel.Controls.Add(this.pulseLS2ONButton);
+            this.TestControlPanel.Enabled = false;
+            this.TestControlPanel.Location = new System.Drawing.Point(901, 345);
+            this.TestControlPanel.Name = "TestControlPanel";
+            this.TestControlPanel.Size = new System.Drawing.Size(353, 108);
+            this.TestControlPanel.TabIndex = 64;
+            // 
             // pulseLS1ONButton
             // 
-            this.pulseLS1ONButton.Enabled = false;
             this.pulseLS1ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS1ONButton.Location = new System.Drawing.Point(901, 345);
+            this.pulseLS1ONButton.Location = new System.Drawing.Point(2, 0);
             this.pulseLS1ONButton.Name = "pulseLS1ONButton";
             this.pulseLS1ONButton.Size = new System.Drawing.Size(104, 23);
-            this.pulseLS1ONButton.TabIndex = 60;
+            this.pulseLS1ONButton.TabIndex = 64;
             this.pulseLS1ONButton.Text = "Pulse LS1 ON";
             this.pulseLS1ONButton.UseVisualStyleBackColor = true;
             this.pulseLS1ONButton.Click += new System.EventHandler(this.pulseLS1ONButton_Click);
             // 
-            // pulseLS1OFFButton
-            // 
-            this.pulseLS1OFFButton.Enabled = false;
-            this.pulseLS1OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS1OFFButton.Location = new System.Drawing.Point(901, 374);
-            this.pulseLS1OFFButton.Name = "pulseLS1OFFButton";
-            this.pulseLS1OFFButton.Size = new System.Drawing.Size(104, 23);
-            this.pulseLS1OFFButton.TabIndex = 61;
-            this.pulseLS1OFFButton.Text = "Pulse LS1 OFF";
-            this.pulseLS1OFFButton.UseVisualStyleBackColor = true;
-            this.pulseLS1OFFButton.Click += new System.EventHandler(this.pulseLS1OFFButton_Click);
-            // 
             // pulseLS2OFFButton
             // 
-            this.pulseLS2OFFButton.Enabled = false;
             this.pulseLS2OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS2OFFButton.Location = new System.Drawing.Point(1011, 374);
+            this.pulseLS2OFFButton.Location = new System.Drawing.Point(112, 29);
             this.pulseLS2OFFButton.Name = "pulseLS2OFFButton";
             this.pulseLS2OFFButton.Size = new System.Drawing.Size(104, 23);
-            this.pulseLS2OFFButton.TabIndex = 63;
+            this.pulseLS2OFFButton.TabIndex = 67;
             this.pulseLS2OFFButton.Text = "Pulse LS2 OFF";
             this.pulseLS2OFFButton.UseVisualStyleBackColor = true;
             this.pulseLS2OFFButton.Click += new System.EventHandler(this.pulseLS2OFFButton_Click);
             // 
+            // pulseLS1OFFButton
+            // 
+            this.pulseLS1OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pulseLS1OFFButton.Location = new System.Drawing.Point(2, 29);
+            this.pulseLS1OFFButton.Name = "pulseLS1OFFButton";
+            this.pulseLS1OFFButton.Size = new System.Drawing.Size(104, 23);
+            this.pulseLS1OFFButton.TabIndex = 65;
+            this.pulseLS1OFFButton.Text = "Pulse LS1 OFF";
+            this.pulseLS1OFFButton.UseVisualStyleBackColor = true;
+            this.pulseLS1OFFButton.Click += new System.EventHandler(this.pulseLS1OFFButton_Click);
+            // 
             // pulseLS2ONButton
             // 
-            this.pulseLS2ONButton.Enabled = false;
             this.pulseLS2ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS2ONButton.Location = new System.Drawing.Point(1011, 345);
+            this.pulseLS2ONButton.Location = new System.Drawing.Point(112, 0);
             this.pulseLS2ONButton.Name = "pulseLS2ONButton";
             this.pulseLS2ONButton.Size = new System.Drawing.Size(104, 23);
-            this.pulseLS2ONButton.TabIndex = 62;
+            this.pulseLS2ONButton.TabIndex = 66;
             this.pulseLS2ONButton.Text = "Pulse LS2 ON";
             this.pulseLS2ONButton.UseVisualStyleBackColor = true;
             this.pulseLS2ONButton.Click += new System.EventHandler(this.pulseLS2ONButton_Click);
+            // 
+            // rawTargetPressureLabel
+            // 
+            this.rawTargetPressureLabel.Location = new System.Drawing.Point(964, 177);
+            this.rawTargetPressureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.rawTargetPressureLabel.Name = "rawTargetPressureLabel";
+            this.rawTargetPressureLabel.Size = new System.Drawing.Size(211, 20);
+            this.rawTargetPressureLabel.TabIndex = 66;
+            this.rawTargetPressureLabel.Text = "Raw Target Pressure:";
+            // 
+            // rawTargetPressureDisplayLabel
+            // 
+            this.rawTargetPressureDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rawTargetPressureDisplayLabel.Location = new System.Drawing.Point(1177, 177);
+            this.rawTargetPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.rawTargetPressureDisplayLabel.Name = "rawTargetPressureDisplayLabel";
+            this.rawTargetPressureDisplayLabel.Size = new System.Drawing.Size(63, 20);
+            this.rawTargetPressureDisplayLabel.TabIndex = 65;
+            this.rawTargetPressureDisplayLabel.Text = "512";
+            this.rawTargetPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // pumpPIDNumericUpDown
+            // 
+            this.pumpPIDNumericUpDown.Location = new System.Drawing.Point(1181, 305);
+            this.pumpPIDNumericUpDown.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.pumpPIDNumericUpDown.Name = "pumpPIDNumericUpDown";
+            this.pumpPIDNumericUpDown.Size = new System.Drawing.Size(67, 26);
+            this.pumpPIDNumericUpDown.TabIndex = 67;
+            this.pumpPIDNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.pumpPIDNumericUpDown.Value = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.pumpPIDNumericUpDown.ValueChanged += new System.EventHandler(this.pumpPIDNumericUpDown_ValueChanged);
             // 
             // PHTManagerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1266, 1171);
-            this.Controls.Add(this.pulseLS2OFFButton);
-            this.Controls.Add(this.pulseLS2ONButton);
-            this.Controls.Add(this.pulseLS1OFFButton);
-            this.Controls.Add(this.pulseLS1ONButton);
+            this.Controls.Add(this.pumpPIDNumericUpDown);
+            this.Controls.Add(this.rawTargetPressureLabel);
+            this.Controls.Add(this.rawTargetPressureDisplayLabel);
+            this.Controls.Add(this.TestControlPanel);
             this.Controls.Add(this.PHTMMainToolStrip);
             this.Controls.Add(this.pulsePeriodUnitsLabel);
             this.Controls.Add(this.pulsePeriodLabel);
@@ -831,6 +884,8 @@
             this.systemPanel.PerformLayout();
             this.PHTMMainToolStrip.ResumeLayout(false);
             this.PHTMMainToolStrip.PerformLayout();
+            this.TestControlPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pumpPIDNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -892,10 +947,14 @@
         private System.Windows.Forms.ToolStripButton startStopDataToolStripButton;
         private System.Windows.Forms.ToolStripButton saveDataToFileToolStripButton;
         private System.Windows.Forms.SaveFileDialog PHTMSaveDataFileDialog;
+        private System.Windows.Forms.Panel TestControlPanel;
         private System.Windows.Forms.Button pulseLS1ONButton;
-        private System.Windows.Forms.Button pulseLS1OFFButton;
         private System.Windows.Forms.Button pulseLS2OFFButton;
+        private System.Windows.Forms.Button pulseLS1OFFButton;
         private System.Windows.Forms.Button pulseLS2ONButton;
+        private System.Windows.Forms.Label rawTargetPressureLabel;
+        private System.Windows.Forms.Label rawTargetPressureDisplayLabel;
+        private System.Windows.Forms.NumericUpDown pumpPIDNumericUpDown;
     }
 }
 

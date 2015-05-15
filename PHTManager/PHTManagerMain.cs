@@ -252,10 +252,11 @@ namespace PHTManager
                 dummy[0] = 0x00;
                 BuildCommMessage(SetModeMsgType, dummy);
                 SendCommandMessage();
-                pulseLS1ONButton.Enabled = true;
-                pulseLS1OFFButton.Enabled = true;
-                pulseLS2ONButton.Enabled = true;
-                pulseLS2OFFButton.Enabled = true;
+                TestControlPanel.Enabled = true;
+                //pulseLS1ONButton.Enabled = true;
+                //pulseLS1OFFButton.Enabled = true;
+                //pulseLS2ONButton.Enabled = true;
+                //pulseLS2OFFButton.Enabled = true;
             }
             else
             {
@@ -263,10 +264,11 @@ namespace PHTManager
                 dummy[0] = 0x01;
                 BuildCommMessage(SetModeMsgType, dummy);
                 SendCommandMessage();
-                pulseLS1ONButton.Enabled = false;
-                pulseLS1OFFButton.Enabled = false;
-                pulseLS2ONButton.Enabled = false;
-                pulseLS2OFFButton.Enabled = false;
+                TestControlPanel.Enabled = false;
+                //pulseLS1ONButton.Enabled = false;
+                //pulseLS1OFFButton.Enabled = false;
+                //pulseLS2ONButton.Enabled = false;
+                //pulseLS2OFFButton.Enabled = false;
             }
         }
 
@@ -481,11 +483,15 @@ namespace PHTManager
         private void targetPressureIncreaseButton_Click(object sender, EventArgs e)
         {
             curDataPoint.TargetCuffPressure++;
+            targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
+            rawTargetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressureToRaw().ToString();
         }
 
         private void targetPressureDecreaseButton_Click(object sender, EventArgs e)
         {
             curDataPoint.TargetCuffPressure--;
+            targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
+            rawTargetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressureToRaw().ToString();
         }
 
         private void COMPortToolStripComboBox_TextChanged(object sender, EventArgs e)
@@ -559,9 +565,9 @@ namespace PHTManager
         private void fillCuffButton_Click(object sender, EventArgs e)
         {
             Byte[] buf = new Byte[3];
-            buf[0] = 0x80;                                              // Initial pump speed (PWM) setting
-            buf[1] = (Byte)(curDataPoint.TargetCuffPressure % 256);     // Target cuff pressure low byte
-            buf[2] = (Byte)(curDataPoint.TargetCuffPressure / 256);     // Target cuff pressure high byte
+            buf[0] = (Byte)pumpPIDNumericUpDown.Value;                          // Initial pump speed (PWM) setting
+            buf[1] = (Byte)(curDataPoint.TargetCuffPressureToRaw() % 256);      // Target cuff pressure low byte
+            buf[2] = (Byte)(curDataPoint.TargetCuffPressureToRaw() / 256);      // Target cuff pressure high byte
             BuildCommMessage(FillCuffMsgType, buf);
             SendCommandMessage();
         }
@@ -575,8 +581,8 @@ namespace PHTManager
         private void ppgPowerOnOffButton_Click(object sender, EventArgs e)
         {
             Byte[] buf = new Byte[2];
-            buf[0] = (Byte)(curDataPoint.TargetCuffPressure % 256);     // Target cuff pressure low byte
-            buf[1] = (Byte)(curDataPoint.TargetCuffPressure / 256);     // Target cuff pressure high byte
+            buf[0] = (Byte)(curDataPoint.TargetCuffPressureToRaw() % 256);     // Target cuff pressure low byte
+            buf[1] = (Byte)(curDataPoint.TargetCuffPressureToRaw() / 256);     // Target cuff pressure high byte
             BuildCommMessage(BleedCuffMsgType, buf);
             SendCommandMessage();
         }
@@ -609,6 +615,11 @@ namespace PHTManager
         {
             BuildCommMessage(LS2OFFMsgType, dummy);
             SendCommandMessage();
+        }
+
+        private void pumpPIDNumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            curDataPoint.CuffPID = (int)pumpPIDNumericUpDown.Value;
         }
 
     }

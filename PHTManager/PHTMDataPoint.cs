@@ -71,6 +71,11 @@ namespace PHTManager
             }
         }
 
+        public int TargetCuffPressureToRaw()
+        {
+            return (targetCuffPressure * 100) / CPGain + CPZero;
+        }
+
         // Default constructor
         public PHTMDataPoint()
         {
