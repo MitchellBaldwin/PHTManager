@@ -252,6 +252,10 @@ namespace PHTManager
                 dummy[0] = 0x00;
                 BuildCommMessage(SetModeMsgType, dummy);
                 SendCommandMessage();
+                pulseLS1ONButton.Enabled = true;
+                pulseLS1OFFButton.Enabled = true;
+                pulseLS2ONButton.Enabled = true;
+                pulseLS2OFFButton.Enabled = true;
             }
             else
             {
@@ -259,6 +263,10 @@ namespace PHTManager
                 dummy[0] = 0x01;
                 BuildCommMessage(SetModeMsgType, dummy);
                 SendCommandMessage();
+                pulseLS1ONButton.Enabled = false;
+                pulseLS1OFFButton.Enabled = false;
+                pulseLS2ONButton.Enabled = false;
+                pulseLS2OFFButton.Enabled = false;
             }
         }
 

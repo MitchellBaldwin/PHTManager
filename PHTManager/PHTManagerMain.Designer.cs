@@ -300,7 +300,6 @@
             // testModeCheckBox
             // 
             this.testModeCheckBox.AutoSize = true;
-            this.testModeCheckBox.Enabled = false;
             this.testModeCheckBox.Location = new System.Drawing.Point(916, 14);
             this.testModeCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.testModeCheckBox.Name = "testModeCheckBox";
@@ -737,6 +736,7 @@
             // 
             // pulseLS1ONButton
             // 
+            this.pulseLS1ONButton.Enabled = false;
             this.pulseLS1ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseLS1ONButton.Location = new System.Drawing.Point(901, 345);
             this.pulseLS1ONButton.Name = "pulseLS1ONButton";
@@ -748,6 +748,7 @@
             // 
             // pulseLS1OFFButton
             // 
+            this.pulseLS1OFFButton.Enabled = false;
             this.pulseLS1OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseLS1OFFButton.Location = new System.Drawing.Point(901, 374);
             this.pulseLS1OFFButton.Name = "pulseLS1OFFButton";
@@ -759,6 +760,7 @@
             // 
             // pulseLS2OFFButton
             // 
+            this.pulseLS2OFFButton.Enabled = false;
             this.pulseLS2OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseLS2OFFButton.Location = new System.Drawing.Point(1011, 374);
             this.pulseLS2OFFButton.Name = "pulseLS2OFFButton";
@@ -770,6 +772,7 @@
             // 
             // pulseLS2ONButton
             // 
+            this.pulseLS2ONButton.Enabled = false;
             this.pulseLS2ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseLS2ONButton.Location = new System.Drawing.Point(1011, 345);
             this.pulseLS2ONButton.Name = "pulseLS2ONButton";
