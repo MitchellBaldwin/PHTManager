@@ -23,8 +23,8 @@ namespace PHTManager
         }
 
         public ushort CPRaw = 512;
-        public ushort CPZero = 512;
-        public ushort CPGain = 38;
+        public ushort CPZero = 32;
+        public ushort CPGain = 18;
 
         private int cP;
         public int CP

@@ -46,6 +46,8 @@ namespace PHTManager
         // Structures to hold dynamic measurements from PHTM device
         PHTMDataPoint curDataPoint = new PHTMDataPoint(0.0, 0, 0);
         PHTMDataPoints dataPointList = new PHTMDataPoints();
+
+        PHTMDataPoint staticDataPoint = new PHTMDataPoint();
         
         // Objects used to graph data
         ZedGraph.PointPairList PPG1List = new ZedGraph.PointPairList();
@@ -340,7 +342,7 @@ namespace PHTManager
             }
 
             cuffPressureDisplayLabel.Text = curDataPoint.CP.ToString();
-            targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
+            //targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
 
             pulseRateDisplayLabel.Text = curDataPoint.BPM.ToString();
             pulsePeriodDisplayLabel.Text = curDataPoint.IBI.ToString();
@@ -452,6 +454,7 @@ namespace PHTManager
                     curDataPoint.DataTime = new ZedGraph.XDate(DateTime.Now).XLDate;
                     curDataPoint.PPG1 = inBuffer[0x02] + inBuffer[0x03] * 256;
                     curDataPoint.CPRaw = (ushort)(inBuffer[0x04] + inBuffer[0x05] * 256);
+                    //curDataPoint.TargetCuffPressure = Int32.Parse(targetPressureDisplayLabel.Text);
 
                     dataPointList.Add(curDataPoint);
 
@@ -482,16 +485,16 @@ namespace PHTManager
 
         private void targetPressureIncreaseButton_Click(object sender, EventArgs e)
         {
-            curDataPoint.TargetCuffPressure++;
-            targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
-            rawTargetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressureToRaw().ToString();
+            staticDataPoint.TargetCuffPressure += 5;
+            targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
+            rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureToRaw().ToString();
         }
 
         private void targetPressureDecreaseButton_Click(object sender, EventArgs e)
         {
-            curDataPoint.TargetCuffPressure--;
-            targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
-            rawTargetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressureToRaw().ToString();
+            staticDataPoint.TargetCuffPressure -= 5;
+            targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
+            rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureToRaw().ToString();
         }
 
         private void COMPortToolStripComboBox_TextChanged(object sender, EventArgs e)
@@ -566,8 +569,8 @@ namespace PHTManager
         {
             Byte[] buf = new Byte[3];
             buf[0] = (Byte)pumpPIDNumericUpDown.Value;                          // Initial pump speed (PWM) setting
-            buf[1] = (Byte)(curDataPoint.TargetCuffPressureToRaw() % 256);      // Target cuff pressure low byte
-            buf[2] = (Byte)(curDataPoint.TargetCuffPressureToRaw() / 256);      // Target cuff pressure high byte
+            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);   // Target cuff pressure low byte
+            buf[2] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);   // Target cuff pressure high byte
             BuildCommMessage(FillCuffMsgType, buf);
             SendCommandMessage();
         }
@@ -581,8 +584,8 @@ namespace PHTManager
         private void ppgPowerOnOffButton_Click(object sender, EventArgs e)
         {
             Byte[] buf = new Byte[2];
-            buf[0] = (Byte)(curDataPoint.TargetCuffPressureToRaw() % 256);     // Target cuff pressure low byte
-            buf[1] = (Byte)(curDataPoint.TargetCuffPressureToRaw() / 256);     // Target cuff pressure high byte
+            buf[0] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);  // Target cuff pressure low byte
+            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);  // Target cuff pressure high byte
             BuildCommMessage(BleedCuffMsgType, buf);
             SendCommandMessage();
         }
