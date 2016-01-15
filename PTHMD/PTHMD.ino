@@ -4,6 +4,7 @@
 // Base timer code from: Arduino timer CTC interrupt example (www.engblaze.com)
 
 // avr-libc library includes
+#include <PacketSerial.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -31,6 +32,10 @@
 #define startbyte 0xF0
 #define COMM_BUFFER_SIZE 32
 
+#define PACKET_SIZE 30
+
+
+
 enum States
 {
 	Fill,
@@ -42,6 +47,9 @@ States State = Vent;
 
 uint8_t inBuffer[COMM_BUFFER_SIZE];
 uint8_t outBuffer[COMM_BUFFER_SIZE];
+
+uint8_t inPacket[PACKET_SIZE];
+uint8_t outPacket[PACKET_SIZE];
 
 uint8_t mode = 0x01;				// 0x00	Test mode
 									// 0x01 Normal mode
@@ -79,6 +87,10 @@ int targetCP = 0;					// Target cuff pressure - raw ACD equivalent value
 
 int loopHalfPeriod = 250;			// Main loop period / 2 (ms) - can be set by Host
 
+PacketSerial spUSB;
+bool newCommandMsgReceived = false;	// Flag indicating a new commang message was received over the spUSB port
+uint8_t commandMsgReceived = 0x00;	// Initialize the type of command received
+
 boolean dataFeedActive = false;		// flag to turn data feed to host on or off
 
 // Regards Serial OutPut  -- Set This Up to your needs
@@ -99,6 +111,8 @@ void setup()
 
 	digitalWrite(LS1_ON_PIN, 0);
 	digitalWrite(LS1_OFF_PIN, 0);
+	digitalWrite(LS2_ON_PIN, 0);
+	digitalWrite(LS2_OFF_PIN, 0);
 
 	for (i = 1; i < COMM_BUFFER_SIZE; ++i)
 	{
@@ -106,11 +120,70 @@ void setup()
 		outBuffer[i] = 0x00;
 	}
 
-	Serial.begin(115200);
-	Serial.flush();
-	
+	for (int i = 0; i < PACKET_SIZE; ++i)
+	{
+		inPacket[i] = 0x00;
+		outPacket[i] = 0x00;
+	}
+	spUSB.setPacketHandler(&OnUSBPacket);
+	spUSB.begin(115200);
+
 	//timer1InterruptSetup();
 	timer2InterruptSetup();
+}
+
+void OnUSBPacket(const uint8_t* buffer, size_t size)
+{
+	// Calculate and test checksum; if test fails purge buffer, set newCommangMsgReceived flag false, and return
+	uint8_t checksum = 0;
+	for (int i = 0; i < PACKET_SIZE - 1; ++i)
+	{
+		checksum += buffer[i];
+	}
+	if (checksum != buffer[PACKET_SIZE - 1])
+	{
+		// Indicate checksum error to host and and other appropriate clients
+		// e.g., text message back to host, LED indicating error status, etc.
+		//char s[TEXT_MESSAGE_MAX_SIZE];
+		//snprintf(s, TEXT_MESSAGE_MAX_SIZE, "MRS-MCC checksum %#x != %#x", checksum, buffer[PACKET_SIZE - 1]);
+		//WriteTextLn(s);
+		ToggleUserLED();
+		return;
+	}
+
+	// Transfer incomming buffer contents (including message type and checksum)	to inPacket
+	for (int i = 0; i < PACKET_SIZE; ++i)
+	{
+		inPacket[i] = buffer[i];
+	}
+
+	// Determine message type
+	commandMsgReceived = buffer[0];
+
+	// Set new message received flag
+	newCommandMsgReceived = true;
+
+	// Test code:
+	if (buffer[0] == 0xF0)				// Test case
+	{
+		ToggleUserLED();
+		//outPacket[0] = buffer[0] + 1;
+		//outPacket[1] = buffer[1] + 1;
+		//outPacket[2] = buffer[2] + 1;
+		//outPacket[3] = buffer[3] + 1;
+		//SendUSBPacket();
+	}
+}
+
+void SendUSBPacket()
+{
+	int checksum = 0;
+	for (int i = 0; i < PACKET_SIZE - 1; ++i)
+	{
+		checksum += outPacket[i];
+	}
+	outPacket[PACKET_SIZE - 1] = checksum;
+	spUSB.send(outPacket, PACKET_SIZE);
 }
 
 void loop()
@@ -169,50 +242,19 @@ void loop()
 
 	// Check for incoming commands from host
 	int i = 0;
-	byte checkSum, msgType;
+	byte checkSum;
 	unsigned int msgLength;
-	bool newMsgReceived;
 	int loopPeriod;
 
-	if (Serial.available() >= COMM_BUFFER_SIZE)
-	{
-		Serial.readBytes(inBuffer, COMM_BUFFER_SIZE);
-
-		// Check integrity of message received
-		checkSum = 0x00;
-		for (i = 0; i < COMM_BUFFER_SIZE - 1; ++i)
-		{
-			checkSum += inBuffer[i];
-		}
-		if (checkSum == inBuffer[COMM_BUFFER_SIZE - 1] && inBuffer[0x00] == startbyte)
-		{
-			newMsgReceived = true;
-		}
-		else
-		{
-			// Attempt to recover from a framing error
-			while (Serial.available() > 0)
-			{
-				if (Serial.peek() != startbyte)
-				{
-					Serial.read();      // Purge serial port buffer until at the start of a new frame
-				}
-			}
-			newMsgReceived = false;
-		}
-	}
-	else
-	{
-		newMsgReceived = false;
-	}
-
-	if (newMsgReceived)
+	if (newCommandMsgReceived)
 	{
 		// Check message type; if it directs a mode change then set new mode and proceed accordingly
-		msgType = inBuffer[0x01];
-		newMsgReceived = false;
+		commandMsgReceived = inBuffer[0x01];
+		newCommandMsgReceived = false;
 
-		switch (msgType)
+		// Commanded State settings should be made in this command parsing switch structure
+		// State changes should be executed in the state machine switch structure that follows
+		switch (commandMsgReceived)
 		{
 		case 0x00:	// Text message message type
 			
@@ -221,7 +263,7 @@ void loop()
 
 		case 0x01:	// Set operating mode message type
 			
-			mode = inBuffer[0x02];
+			mode = inPacket[0x01];
 			if (mode == 0x00)		// Change to Test mode
 			{
 				ledON = loopHalfPeriod;
@@ -252,7 +294,7 @@ void loop()
 			
 			// If we're turning off the data feed then clear the serial transmission buffer
 			//to help ensure frame synchronization when transmission is restarted
-			Serial.flush();		// Wait for the hardware serial transmission buffer to clear
+			//Serial.flush();		// Wait for the hardware serial transmission buffer to clear
 			
 			break;
 
@@ -274,22 +316,18 @@ void loop()
 
 		case 0x08:	// SetLoopPeriodMsgType
 			// Change main loop period to value (in ms) commanded by Host
-			loopPeriod = inBuffer[0x03] * 0xFF + inBuffer[0x02];
+			loopPeriod = inPacket[0x02] * 0xFF + inPacket[0x01];
 			loopHalfPeriod = loopPeriod / 2;
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to set cuff fill solenoid on
-			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
 			LS1ON();								// Connect LS1 to pump
-			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
 			LS2ON();								// Connect cuff to LS1
-			pumpSpeed = inBuffer[0x02];				// Set initial pump speed
+			pumpSpeed = inPacket[0x01];				// Set initial pump speed
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Read and set target cuff pressure:
-			targetCP = inBuffer[0x04] * 0xFF + inBuffer[0x03];
+			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
 
 			// Set state:
 			State = Fill;
@@ -297,11 +335,7 @@ void loop()
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS1 to pump
-			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
 			LS1ON();								// Connect LS1 to pump
-			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
 			LS2ON();								// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
@@ -311,29 +345,21 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			//ls1ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to pump
-			//digitalWrite(LS1_ON_PIN, 1);			// Set the LS1 ON control pin high to latch LS1 to ON position
 			LS1ON();								// Conncet LS1 to pump
-			//ls2OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to bleed port
-			//digitalWrite(LS2_OFF_PIN, 1);			// Set the LS2 OFF control pin high to latch LS2 to OFF position
 			LS2OFF();								// Connect cuff to bleed port
 
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Read and set target cuff pressure:
-			targetCP = inBuffer[0x03] * 0xFF + inBuffer[0x02];
+			targetCP = inPacket[0x02] * 0xFF + inPacket[0x01];
 
 			// Set state:
 			State = Bleed;
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			//ls1OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect LS2 to atmosphere
-			//digitalWrite(LS1_OFF_PIN, 1);			// Set the LS1 OFF control pin high to latch LS1 to OFF position
 			LS1OFF();								// Connect LS2 to atmosphere
-			//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-			//digitalWrite(LS2_ON_PIN, 1);			// Set the LS2 ON control pin high to latch LS2 to ON position
 			LS2ON();								// Connect cuff to LS1
 
 			pumpSpeed = 0xFF;						// Turn pump off
@@ -371,6 +397,8 @@ void loop()
 			break;
 
 		case Hold:
+			// No action needed - state set in command case or other state transition cases
+			// Transition from Hold state must be initiated by host command or other logic
 
 			break;
 
@@ -392,6 +420,8 @@ void loop()
 			break;
 
 		case Vent:
+			// No action needed - state set in command case or other state transition cases
+			// Transition from Vent state must be initiated by host command or other logic
 
 			break;
 
@@ -404,39 +434,44 @@ void loop()
 	// DONE: Check that the sensor data is new before sending to host
 	if (newSensorData && dataFeedActive)
 	{
-		outBuffer[0x00] = startbyte;
-		outBuffer[0x01] = 0x18;					// SensorDataMsgType
-		outBuffer[0x02] = lowByte(Signal);		// low byte of PPG sensor measurement
-		outBuffer[0x03] = highByte(Signal);		// high byte of PPG sensor measurement
-		outBuffer[0x04] = lowByte(CP);			// low byte of cuff pressure sensor measurement
-		outBuffer[0x05] = highByte(CP);			// high byte of cuff pressure sensor measurement
-		outBuffer[0x06] = CuffPID;				// Output setting from Cuff PID controller
-		outBuffer[0x07] = lowByte(BPM);			// calculated pulse rate, beats per minute
+		outPacket[0x00] = 0x18;					// SensorDataMsgType
+		outPacket[0x01] = lowByte(Signal);		// low byte of PPG sensor measurement
+		outPacket[0x02] = highByte(Signal);		// high byte of PPG sensor measurement
+		outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
+		outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
+		outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
+		outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
 
-		outBuffer[0x08] = highByte(BPM);
-		outBuffer[0x09] = lowByte(IBI);			// time interval between beats
-		outBuffer[0x0A] = highByte(IBI);
+		outPacket[0x07] = highByte(BPM);
+		outPacket[0x08] = lowByte(IBI);			// time interval between beats
+		outPacket[0x09] = highByte(IBI);
 
-		for (i = 0x0B; i < COMM_BUFFER_SIZE - 1; ++i)
+		for (i = 0x0A; i < PACKET_SIZE - 1; ++i)
 		{
-			outBuffer[i] = 0x00;
+			outPacket[i] = 0x00;
 		}
 
-		checkSum = 0;
-		for (i = 0; i < COMM_BUFFER_SIZE - 2; ++i)
-		{
-			checkSum += outBuffer[i];
-		}
-		outBuffer[COMM_BUFFER_SIZE - 1] = checkSum;
-
-		Serial.flush();
-		Serial.write(outBuffer, COMM_BUFFER_SIZE);
+		SendUSBPacket();
 		newSensorData = false;
 	}
 
 	// Uncomment the following line to enable the fader pin
-	//ledFadeToBeat();                    // Makes the LED Fade Effect Happen 
+	//ledFadeToBeat();						  // Makes the LED Fade Effect Happen 
 	
+	spUSB.update();							// Let PacketSerial do its thing
+
 	delay(10);								//  take a break
 
+}
+
+void ToggleUserLED()						// Helper function to toggle user LED (PIN 13)
+{
+	if (digitalRead(LEDPIN) == HIGH)
+	{
+		digitalWrite(LEDPIN, LOW);
+	}
+	else
+	{
+		digitalWrite(LEDPIN, HIGH);
+	}
 }

@@ -23,15 +23,18 @@ namespace PHTManager
         }
 
         public ushort CPRaw = 512;
-        public ushort CPZero = 32;
-        public ushort CPGain = 18;
+        public ushort CPZero = 29;
+        //public ushort CPZero = 0;
+        public double CPGain = 28.47;
+        //public double CPGain = 26.85;
+        //public double CPGain = 20.0;
 
         private int cP;
         public int CP
         {
             get
             {
-                cP = (CPRaw - CPZero) * CPGain / 100;
+                cP = (int)((CPRaw - CPZero) * (CPGain / 100.0));
                 return cP;
             }
             set
@@ -73,7 +76,7 @@ namespace PHTManager
 
         public int TargetCuffPressureToRaw()
         {
-            return (targetCuffPressure * 100) / CPGain + CPZero;
+            return (targetCuffPressure * 100) / (int)CPGain + CPZero;
         }
 
         // Default constructor

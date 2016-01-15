@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="COBSCodec.cs" />
     <Compile Include="CSVFileStream.cs" />
     <Compile Include="PHTManagerMain.cs">
       <SubType>Form</SubType>

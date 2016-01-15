@@ -16,7 +16,7 @@ volatile boolean secondBeat = false;      // used to seed rate array so we start
 
 void timer1InterruptSetup()
 {
-	// Initialize Timer1 to interrupt every ~1 ms
+	// Initialize Timer1 to interrupt every 1 ms
 	cli();          // disable global interrupts
 	TCCR1A = 0;     // set entire TCCR1A register to 0
 	TCCR1B = 0;     // same for TCCR1B
@@ -47,7 +47,7 @@ void timer2InterruptSetup(){
 
 
 // TIMER1 INTERRUPT SERVICE ROUTINE - Test Timer Interrupts
-// Assumes Timer2 is initialized to interrupt every ~1 ms (1000 Hz)
+// Assumes Timer1 is initialized to interrupt every ~1 ms (1000 Hz)
 ISR(TIMER1_COMPA_vect)
 {
 	//// Read PPG sensors on even interrupt cycles, or pressure sensors on odd cycles
@@ -82,15 +82,15 @@ ISR(TIMER1_COMPA_vect)
 		ls1ONPulseCounter--;
 		if (ls1ONPulseCounter <= 0)
 		{
-			digitalWrite(LS1_ON_PIN, 1);
+			digitalWrite(LS1_ON_PIN, 0);
 		}
 	}
 	if (ls1OFFPulseCounter > 0)
 	{
 		ls1OFFPulseCounter--;
-		if (ls1OFFPulseCounter <= 1)
+		if (ls1OFFPulseCounter <= 0)
 		{
-			digitalWrite(LS1_OFF_PIN, 1);
+			digitalWrite(LS1_OFF_PIN, 0);
 		}
 	}
 	if (ls2ONPulseCounter > 0)

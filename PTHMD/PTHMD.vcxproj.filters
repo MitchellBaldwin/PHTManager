@@ -20,7 +20,7 @@
     <None Include="LSControlFunctions.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Visual Micro\.PTHMD.vsarduino.h">
+    <ClInclude Include="__vm\.PTHMD.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

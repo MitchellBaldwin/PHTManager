@@ -12,14 +12,12 @@
 #define _VSARDUINO_H_
 #define __AVR_ATmega328p__
 #define __AVR_ATmega328P__
-#define ARDUINO 164
-#define ARDUINO_MAIN
-#define __AVR__
-#define __avr__
 #define F_CPU 16000000L
-#define __cplusplus
-#define ARDUINO_ARCH_AVR
+#define ARDUINO 10604
 #define ARDUINO_AVR_UNO
+#define ARDUINO_ARCH_AVR
+#define __cplusplus
+#define __AVR__
 #define __inline__
 #define __asm__(x)
 #define __extension__
@@ -86,7 +84,7 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <PTHMD.ino>
-#include <Interrupts.ino>
-#include <LSControlFunctions.ino>
+#include <..\PTHMD\PTHMD.ino>
+#include <..\PTHMD\Interrupts.ino>
+#include <..\PTHMD\LSControlFunctions.ino>
 #endif
