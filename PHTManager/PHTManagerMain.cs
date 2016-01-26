@@ -91,7 +91,7 @@ namespace PHTManager
         }
 
         // Switch or displaying contents of the communications buffer outgoing to the PHM Main Controller
-        Boolean showOutBufferUpdates = false;
+        Boolean showOutBufferUpdates = true;
         public Boolean ShowOutBufferUpdates
         {
             get { return showOutBufferUpdates; }
@@ -326,7 +326,9 @@ namespace PHTManager
         {
             if (PHMSerialPort.BytesToRead < COMM_BUFFER_SIZE)
             {
-                Console.WriteLine("False call to DataReceived");
+                // DEBUG: Uncomment the following line to log reports of calls to this handler when the serial receive buffer has fewer
+                // than COMM_BUFFER_SIZE bytes
+                //Console.WriteLine("False call to DataReceived: " + PHMSerialPort.BytesToRead.ToString() + " bytes in receive buffer");
                 return;
             }
             try
@@ -419,8 +421,8 @@ namespace PHTManager
             for (int i = 0; i < buffer.Length; ++i)
             {
                 packetBuffer[1 + i] = buffer[i];
-                checkSum += buffer[i];
             }
+
             checkSum = 0x00;
             for (int i = 0; i < PACKET_SIZE - 1; ++i)
             {
@@ -462,9 +464,9 @@ namespace PHTManager
 
         #region Menu, toolbar and control event handlers
         // The primary means of connecting to the PHTM device via the serial port is to check the "Connect" check box
-        private void phmspConnectCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void connectButton_Click(object sender, EventArgs e)
         {
-            if (phmspConnectCheckBox.Checked)
+            if (!PHMSerialPort.IsOpen)
             {
                 try
                 {
@@ -472,11 +474,18 @@ namespace PHTManager
                     PHMMainTimer.Enabled = true;
                     testModeCheckBox.Enabled = true;
                     commErrorDisplayLabel.Text = "Connected";
+                    connectButton.Text = "Disconnect";
+
+                    PHMSerialPort.DiscardInBuffer();
+                    
+                    // Start the data feed upon connecting
+                    BuildCommMessage(StartDataFeed, dummy);
+                    SendCommandMessage();
                 }
                 catch (IOException ioe)
                 {
                     Console.WriteLine(ioe.GetType().Name + ": " + ioe.Message);
-                    phmspConnectCheckBox.Checked = false;
+                    //phmspConnectCheckBox.Checked = false;
                 }
             }
             else
@@ -488,13 +497,48 @@ namespace PHTManager
                     SendCommandMessage();
                     // Give the serial port and embedded system time to process the message to stop the data feed
                     System.Threading.Thread.Sleep(1000);
-
                     PHMSerialPort.Close();
-                    PHMMainTimer.Enabled = false;
-                    testModeCheckBox.Enabled = false;
-                    commErrorDisplayLabel.Text = "Not connected";
                 }
+                PHMMainTimer.Enabled = false;
+                testModeCheckBox.Enabled = false;
+                commErrorDisplayLabel.Text = "Not connected";
+                connectButton.Text = "Connect";
             }
+        }
+
+        private void phmspConnectCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (phmspConnectCheckBox.Checked)
+            //{
+            //    try
+            //    {
+            //        PHMSerialPort.Open();
+            //        PHMMainTimer.Enabled = true;
+            //        testModeCheckBox.Enabled = true;
+            //        commErrorDisplayLabel.Text = "Connected";
+            //    }
+            //    catch (IOException ioe)
+            //    {
+            //        Console.WriteLine(ioe.GetType().Name + ": " + ioe.Message);
+            //        phmspConnectCheckBox.Checked = false;
+            //    }
+            //}
+            //else
+            //{
+            //    if (PHMSerialPort.IsOpen)
+            //    {
+            //        // If the serial port is open and the data feed is active then stop the data feed before closing the port
+            //        BuildCommMessage(StopDataFeed, dummy);
+            //        SendCommandMessage();
+            //        // Give the serial port and embedded system time to process the message to stop the data feed
+            //        System.Threading.Thread.Sleep(1000);
+
+            //        PHMSerialPort.Close();
+            //        PHMMainTimer.Enabled = false;
+            //        testModeCheckBox.Enabled = false;
+            //        commErrorDisplayLabel.Text = "Not connected";
+            //    }
+            //}
         }
 
         private void COMPortToolStripComboBox_TextChanged(object sender, EventArgs e)
@@ -644,11 +688,12 @@ namespace PHTManager
             SendCommandMessage();
         }
 
-        private void ppgPowerOnOffButton_Click(object sender, EventArgs e)
+        private void bleedCuffPressureButton_Click(object sender, EventArgs e)
         {
-            Byte[] buf = new Byte[2];
-            buf[0] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);  // Target cuff pressure low byte
-            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);  // Target cuff pressure high byte
+            Byte[] buf = new Byte[3];
+            buf[0] = 0xFF;                                                      // Turn pump OFF
+            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);   // Target cuff pressure low byte
+            buf[2] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);   // Target cuff pressure high byte
             BuildCommMessage(BleedCuffMsgType, buf);
             SendCommandMessage();
         }

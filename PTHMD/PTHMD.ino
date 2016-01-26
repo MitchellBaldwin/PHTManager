@@ -22,6 +22,9 @@
 
 #define FADE_PIN 5					// PWM pin to do fancy classy fading blink at each beat
 #define PUMP_PIN 6					// PWM control of the pump
+#define S1_PIN 2					// Solenoid valve 1 control pin
+#define S2_PIN 3					// Solenoid valve 2 control pin
+
 #define LS1_ON_PIN 7				// LS1 ON signal pin to SN754410 1A (pin 2)
 #define LS1_OFF_PIN 8				// LS1 OFF signal pin to SN754410 2A (pin 3)
 #define LS2_ON_PIN 9				// LS2 ON signal pin to SN754410 2A (pin 7)
@@ -102,12 +105,21 @@ void setup()
 
 	pinMode(FADE_PIN, OUTPUT);
 	pinMode(PUMP_PIN, OUTPUT);
+	pinMode(S1_PIN, OUTPUT);
+	pinMode(S2_PIN, OUTPUT);
+
 	pinMode(LS1_ON_PIN, OUTPUT);
 	pinMode(LS1_OFF_PIN, OUTPUT);
 	pinMode(LS2_ON_PIN, OUTPUT);
 	pinMode(LS2_OFF_PIN, OUTPUT);
 	
 	pinMode(LEDPIN, OUTPUT);
+
+	// Initialize output pins:
+	pumpSpeed = 0xFF;						// Turn pump off
+	analogWrite(PUMP_PIN, pumpSpeed);
+	digitalWrite(S1_PIN, 0);
+	digitalWrite(S2_PIN, 0);
 
 	digitalWrite(LS1_ON_PIN, 0);
 	digitalWrite(LS1_OFF_PIN, 0);
@@ -147,7 +159,7 @@ void OnUSBPacket(const uint8_t* buffer, size_t size)
 		//char s[TEXT_MESSAGE_MAX_SIZE];
 		//snprintf(s, TEXT_MESSAGE_MAX_SIZE, "MRS-MCC checksum %#x != %#x", checksum, buffer[PACKET_SIZE - 1]);
 		//WriteTextLn(s);
-		ToggleUserLED();
+		//ToggleUserLED();
 		return;
 	}
 
@@ -164,9 +176,9 @@ void OnUSBPacket(const uint8_t* buffer, size_t size)
 	newCommandMsgReceived = true;
 
 	// Test code:
-	if (buffer[0] == 0xF0)				// Test case
+	if (buffer[0] == 0x01)				// Test case
 	{
-		ToggleUserLED();
+		//ToggleUserLED();
 		//outPacket[0] = buffer[0] + 1;
 		//outPacket[1] = buffer[1] + 1;
 		//outPacket[2] = buffer[2] + 1;
@@ -249,7 +261,7 @@ void loop()
 	if (newCommandMsgReceived)
 	{
 		// Check message type; if it directs a mode change then set new mode and proceed accordingly
-		commandMsgReceived = inBuffer[0x01];
+		//commandMsgReceived = inBuffer[0x00];
 		newCommandMsgReceived = false;
 
 		// Commanded State settings should be made in this command parsing switch structure
@@ -266,9 +278,32 @@ void loop()
 			mode = inPacket[0x01];
 			if (mode == 0x00)		// Change to Test mode
 			{
-				ledON = loopHalfPeriod;
-				digitalWrite(LEDPIN, 1);
+				//ledON = loopHalfPeriod;
+				//digitalWrite(LEDPIN, 1);
 				//WriteTextLn("Entering Test mode");
+				
+					// TEST - Send a data packet to test serial communications response:
+					outPacket[0x00] = 0x18;					// SensorDataMsgType
+					outPacket[0x01] = lowByte(Signal);		// low byte of PPG sensor measurement
+					outPacket[0x02] = highByte(Signal);		// high byte of PPG sensor measurement
+					outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
+					outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
+					outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
+					outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
+					outPacket[0x07] = highByte(BPM);
+					outPacket[0x08] = lowByte(IBI);			// time interval between beats
+					outPacket[0x09] = highByte(IBI);
+
+					for (i = 0x0A; i < PACKET_SIZE - 1; ++i)
+					{
+						outPacket[i] = 0x00;
+					}
+
+					SendUSBPacket();
+
+					ToggleUserLED();
+					// END TEST - Send a data packet to test serial communications response:
+
 			}
 			else if (mode == 0x01)	// Change to Normal mode
 			{
@@ -299,19 +334,23 @@ void loop()
 			break;
 
 		case 0x04:		// Latch LS1 ON
-			LS1ON();
+			digitalWrite(S1_PIN, 1);
+			//LS1ON();
 			break;
 
 		case 0x05:		// Latch LS1 OFF
-			LS1OFF();
+			digitalWrite(S1_PIN, 0);
+			//LS1OFF();
 			break;
 
 		case 0x06:		// Latch LS2 ON
-			LS2ON();
+			digitalWrite(S2_PIN, 1);
+			//LS2ON();
 			break;
 
 		case 0x07:		// Latch LS2 OFF
-			LS2OFF();
+			digitalWrite(S2_PIN, 0);
+			//LS2OFF();
 			break;
 
 		case 0x08:	// SetLoopPeriodMsgType
@@ -321,8 +360,8 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			LS1ON();								// Connect LS1 to pump
-			LS2ON();								// Connect cuff to LS1
+			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
+			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
 			pumpSpeed = inPacket[0x01];				// Set initial pump speed
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -335,8 +374,8 @@ void loop()
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			LS1ON();								// Connect LS1 to pump
-			LS2ON();								// Connect cuff to LS1
+			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
+			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -345,9 +384,8 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			LS1ON();								// Conncet LS1 to pump
-			LS2OFF();								// Connect cuff to bleed port
-
+			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
+			digitalWrite(S2_PIN, 0);				// Connect cuff to bleed port
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -359,9 +397,8 @@ void loop()
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			LS1OFF();								// Connect LS2 to atmosphere
-			LS2ON();								// Connect cuff to LS1
-
+			digitalWrite(S1_PIN, 0);				// Connect LS1 to atmosphere
+			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -386,8 +423,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				LS1ON();								// Connect LS1 to pump
-				LS2ON();								// Connect cuff to LS1
+				digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
+				digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -409,8 +446,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				LS1ON();								// Connect LS1 to pump
-				LS2ON();								// Connect cuff to LS1
+				digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
+				digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -459,6 +496,8 @@ void loop()
 	//ledFadeToBeat();						  // Makes the LED Fade Effect Happen 
 	
 	spUSB.update();							// Let PacketSerial do its thing
+
+	// TODO: Ensure this delay is not pacing the transmission of data to the host:
 
 	delay(10);								//  take a break
 

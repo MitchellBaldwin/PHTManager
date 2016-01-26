@@ -219,39 +219,39 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
 		}
 	}
 
-	// Manage latching solenoid pulse timers
-	if (ls1ONPulseCounter > 0)
-	{
-		ls1ONPulseCounter--;
-		if (ls1ONPulseCounter <= 0)
-		{
-			digitalWrite(LS1_ON_PIN, 0);
-		}
-	}
-	if (ls1OFFPulseCounter > 0)
-	{
-		ls1OFFPulseCounter--;
-		if (ls1OFFPulseCounter <= 0)
-		{
-			digitalWrite(LS1_OFF_PIN, 0);
-		}
-	}
-	if (ls2ONPulseCounter > 0)
-	{
-		ls2ONPulseCounter--;
-		if (ls2ONPulseCounter <= 0)
-		{
-			digitalWrite(LS2_ON_PIN, 0);
-		}
-	}
-	if (ls2OFFPulseCounter > 0)
-	{
-		ls2OFFPulseCounter--;
-		if (ls2OFFPulseCounter <= 0)
-		{
-			digitalWrite(LS2_OFF_PIN, 0);
-		}
-	}
+	//// Manage latching solenoid pulse timers
+	//if (ls1ONPulseCounter > 0)
+	//{
+	//	ls1ONPulseCounter--;
+	//	if (ls1ONPulseCounter <= 0)
+	//	{
+	//		digitalWrite(LS1_ON_PIN, 0);
+	//	}
+	//}
+	//if (ls1OFFPulseCounter > 0)
+	//{
+	//	ls1OFFPulseCounter--;
+	//	if (ls1OFFPulseCounter <= 0)
+	//	{
+	//		digitalWrite(LS1_OFF_PIN, 0);
+	//	}
+	//}
+	//if (ls2ONPulseCounter > 0)
+	//{
+	//	ls2ONPulseCounter--;
+	//	if (ls2ONPulseCounter <= 0)
+	//	{
+	//		digitalWrite(LS2_ON_PIN, 0);
+	//	}
+	//}
+	//if (ls2OFFPulseCounter > 0)
+	//{
+	//	ls2OFFPulseCounter--;
+	//	if (ls2OFFPulseCounter <= 0)
+	//	{
+	//		digitalWrite(LS2_OFF_PIN, 0);
+	//	}
+	//}
 
 	sei();                                   // enable interrupts when youre done!
 }// end Timer 2 ISR
