@@ -110,7 +110,7 @@
             this.cuffPressureDisplayPanel.Controls.Add(this.currentCuffPressureLabel);
             this.cuffPressureDisplayPanel.Controls.Add(this.cuffPressureDisplayLabel);
             this.cuffPressureDisplayPanel.Location = new System.Drawing.Point(465, 15);
-            this.cuffPressureDisplayPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cuffPressureDisplayPanel.Margin = new System.Windows.Forms.Padding(4);
             this.cuffPressureDisplayPanel.Name = "cuffPressureDisplayPanel";
             this.cuffPressureDisplayPanel.Size = new System.Drawing.Size(301, 123);
             this.cuffPressureDisplayPanel.TabIndex = 0;
@@ -149,7 +149,7 @@
             this.systolicPressurePanel.Controls.Add(this.lastSystolicPressureLabel);
             this.systolicPressurePanel.Controls.Add(this.lastSystolicPressureDisplayLabel);
             this.systolicPressurePanel.Location = new System.Drawing.Point(465, 145);
-            this.systolicPressurePanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.systolicPressurePanel.Margin = new System.Windows.Forms.Padding(4);
             this.systolicPressurePanel.Name = "systolicPressurePanel";
             this.systolicPressurePanel.Size = new System.Drawing.Size(301, 123);
             this.systolicPressurePanel.TabIndex = 2;
@@ -188,7 +188,7 @@
             this.pulseRatePanel.Controls.Add(this.pulseRateLebel);
             this.pulseRatePanel.Controls.Add(this.pulseRateDisplayLabel);
             this.pulseRatePanel.Location = new System.Drawing.Point(465, 276);
-            this.pulseRatePanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pulseRatePanel.Margin = new System.Windows.Forms.Padding(4);
             this.pulseRatePanel.Name = "pulseRatePanel";
             this.pulseRatePanel.Size = new System.Drawing.Size(301, 123);
             this.pulseRatePanel.TabIndex = 5;
@@ -229,7 +229,7 @@
             this.targeyPressurePanel.Controls.Add(this.targetPressureLabel);
             this.targeyPressurePanel.Controls.Add(this.targetPressureDisplayLabel);
             this.targeyPressurePanel.Location = new System.Drawing.Point(801, 15);
-            this.targeyPressurePanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.targeyPressurePanel.Margin = new System.Windows.Forms.Padding(4);
             this.targeyPressurePanel.Name = "targeyPressurePanel";
             this.targeyPressurePanel.Size = new System.Drawing.Size(301, 123);
             this.targeyPressurePanel.TabIndex = 9;
@@ -238,7 +238,7 @@
             // 
             this.targetPressureDecreaseButton.Image = global::PHTManager.Properties.Resources.down;
             this.targetPressureDecreaseButton.Location = new System.Drawing.Point(0, 80);
-            this.targetPressureDecreaseButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.targetPressureDecreaseButton.Margin = new System.Windows.Forms.Padding(4);
             this.targetPressureDecreaseButton.Name = "targetPressureDecreaseButton";
             this.targetPressureDecreaseButton.Size = new System.Drawing.Size(56, 43);
             this.targetPressureDecreaseButton.TabIndex = 3;
@@ -249,7 +249,7 @@
             // 
             this.targetPressureIncreaseButton.Image = global::PHTManager.Properties.Resources.up;
             this.targetPressureIncreaseButton.Location = new System.Drawing.Point(0, 39);
-            this.targetPressureIncreaseButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.targetPressureIncreaseButton.Margin = new System.Windows.Forms.Padding(4);
             this.targetPressureIncreaseButton.Name = "targetPressureIncreaseButton";
             this.targetPressureIncreaseButton.Size = new System.Drawing.Size(56, 43);
             this.targetPressureIncreaseButton.TabIndex = 2;
@@ -300,7 +300,7 @@
             this.systemPanel.Controls.Add(this.phmspLabel);
             this.systemPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.systemPanel.Location = new System.Drawing.Point(0, 839);
-            this.systemPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.systemPanel.Margin = new System.Windows.Forms.Padding(4);
             this.systemPanel.Name = "systemPanel";
             this.systemPanel.Size = new System.Drawing.Size(1125, 98);
             this.systemPanel.TabIndex = 10;
@@ -309,7 +309,7 @@
             // 
             this.testModeCheckBox.AutoSize = true;
             this.testModeCheckBox.Location = new System.Drawing.Point(815, 11);
-            this.testModeCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.testModeCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.testModeCheckBox.Name = "testModeCheckBox";
             this.testModeCheckBox.Size = new System.Drawing.Size(97, 21);
             this.testModeCheckBox.TabIndex = 46;
@@ -340,7 +340,7 @@
             // 
             this.showAllBufferUpdatesCheckBox.AutoSize = true;
             this.showAllBufferUpdatesCheckBox.Location = new System.Drawing.Point(927, 10);
-            this.showAllBufferUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.showAllBufferUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.showAllBufferUpdatesCheckBox.Name = "showAllBufferUpdatesCheckBox";
             this.showAllBufferUpdatesCheckBox.Size = new System.Drawing.Size(178, 21);
             this.showAllBufferUpdatesCheckBox.TabIndex = 43;
@@ -386,7 +386,7 @@
             // 
             this.phmspConnectCheckBox.AutoSize = true;
             this.phmspConnectCheckBox.Location = new System.Drawing.Point(719, 10);
-            this.phmspConnectCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.phmspConnectCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.phmspConnectCheckBox.Name = "phmspConnectCheckBox";
             this.phmspConnectCheckBox.Size = new System.Drawing.Size(82, 21);
             this.phmspConnectCheckBox.TabIndex = 39;
@@ -538,7 +538,7 @@
             this.reperfuseButton.Image = global::PHTManager.Properties.Resources.rotate_3d;
             this.reperfuseButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.reperfuseButton.Location = new System.Drawing.Point(16, 231);
-            this.reperfuseButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reperfuseButton.Margin = new System.Windows.Forms.Padding(4);
             this.reperfuseButton.Name = "reperfuseButton";
             this.reperfuseButton.Size = new System.Drawing.Size(331, 52);
             this.reperfuseButton.TabIndex = 8;
@@ -555,7 +555,7 @@
             this.maintainCuffPressureButton.Image = global::PHTManager.Properties.Resources.disc;
             this.maintainCuffPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.maintainCuffPressureButton.Location = new System.Drawing.Point(16, 113);
-            this.maintainCuffPressureButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.maintainCuffPressureButton.Margin = new System.Windows.Forms.Padding(4);
             this.maintainCuffPressureButton.Name = "maintainCuffPressureButton";
             this.maintainCuffPressureButton.Size = new System.Drawing.Size(331, 52);
             this.maintainCuffPressureButton.TabIndex = 7;
@@ -572,7 +572,7 @@
             this.findSystolicPressureButton.Image = global::PHTManager.Properties.Resources.forward;
             this.findSystolicPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.findSystolicPressureButton.Location = new System.Drawing.Point(16, 290);
-            this.findSystolicPressureButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.findSystolicPressureButton.Margin = new System.Windows.Forms.Padding(4);
             this.findSystolicPressureButton.Name = "findSystolicPressureButton";
             this.findSystolicPressureButton.Size = new System.Drawing.Size(331, 52);
             this.findSystolicPressureButton.TabIndex = 6;
@@ -588,7 +588,7 @@
             this.bleedCuffPressureButton.Image = global::PHTManager.Properties.Resources.down;
             this.bleedCuffPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bleedCuffPressureButton.Location = new System.Drawing.Point(16, 172);
-            this.bleedCuffPressureButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bleedCuffPressureButton.Margin = new System.Windows.Forms.Padding(4);
             this.bleedCuffPressureButton.Name = "bleedCuffPressureButton";
             this.bleedCuffPressureButton.Size = new System.Drawing.Size(331, 52);
             this.bleedCuffPressureButton.TabIndex = 4;
@@ -605,7 +605,7 @@
             this.fillCuffButton.Image = global::PHTManager.Properties.Resources.up;
             this.fillCuffButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.fillCuffButton.Location = new System.Drawing.Point(16, 54);
-            this.fillCuffButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fillCuffButton.Margin = new System.Windows.Forms.Padding(4);
             this.fillCuffButton.Name = "fillCuffButton";
             this.fillCuffButton.Size = new System.Drawing.Size(331, 52);
             this.fillCuffButton.TabIndex = 3;
@@ -625,7 +625,7 @@
             // 
             // PHMMainTimer
             // 
-            this.PHMMainTimer.Interval = 50;
+            this.PHMMainTimer.Interval = 10;
             this.PHMMainTimer.Tick += new System.EventHandler(this.PHMMainTimer_Tick);
             // 
             // phmDataZedGraph
@@ -648,7 +648,7 @@
             // 
             this.showPumpPIDOnGraphCheckBox.AutoSize = true;
             this.showPumpPIDOnGraphCheckBox.Location = new System.Drawing.Point(801, 246);
-            this.showPumpPIDOnGraphCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.showPumpPIDOnGraphCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.showPumpPIDOnGraphCheckBox.Name = "showPumpPIDOnGraphCheckBox";
             this.showPumpPIDOnGraphCheckBox.Size = new System.Drawing.Size(191, 21);
             this.showPumpPIDOnGraphCheckBox.TabIndex = 55;
@@ -902,7 +902,7 @@
             this.Controls.Add(this.systolicPressurePanel);
             this.Controls.Add(this.cuffPressureDisplayPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PHTManagerMain";
             this.Text = "Permissive Hypotension Management";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PHTManagerMain_FormClosing);

@@ -14,12 +14,26 @@ namespace PHTManager
             get { return dataTime; }
             set { dataTime = value; }
         }
+
+        private Int32 dataTimeMS;
+        public Int32 DataTimeMS
+        {
+            get { return dataTimeMS; }
+            set { dataTimeMS = value; }
+        }
         
         private int pPG1;
         public int PPG1
         {
             get { return pPG1; }
             set { pPG1 = value; }
+        }
+
+        private int pPG2;
+        public int PPG2
+        {
+            get { return pPG2; }
+            set { pPG2 = value; }
         }
 
         public ushort CPRaw = 512;
@@ -82,13 +96,28 @@ namespace PHTManager
         // Default constructor
         public PHTMDataPoint()
         {
-
+            dataTime = 0.0;
+            dataTimeMS = 0;
+            pPG1 = 0;
+            pPG2 = 0;
+            cP = 0;
         }
 
         public PHTMDataPoint(double time, int ppg1, int cp)
         {
             dataTime = time;
+            dataTimeMS = 0;
             pPG1 = ppg1;
+            pPG2 = 0;
+            cP = cp;
+        }
+
+        public PHTMDataPoint(double time, Int32 timeMS, int ppg1, int ppg2, int cp)
+        {
+            dataTime = time;
+            dataTimeMS = timeMS;
+            pPG1 = ppg1;
+            pPG2 = ppg2;
             cP = cp;
         }
     }

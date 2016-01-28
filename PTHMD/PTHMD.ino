@@ -25,10 +25,10 @@
 #define S1_PIN 2					// Solenoid valve 1 control pin
 #define S2_PIN 3					// Solenoid valve 2 control pin
 
-#define LS1_ON_PIN 7				// LS1 ON signal pin to SN754410 1A (pin 2)
-#define LS1_OFF_PIN 8				// LS1 OFF signal pin to SN754410 2A (pin 3)
-#define LS2_ON_PIN 9				// LS2 ON signal pin to SN754410 2A (pin 7)
-#define LS2_OFF_PIN 10				// LS2 OFF signal pin to SN754410 1A (pin 6)
+//#define LS1_ON_PIN 7				// LS1 ON signal pin to SN754410 1A (pin 2)
+//#define LS1_OFF_PIN 8				// LS1 OFF signal pin to SN754410 2A (pin 3)
+//#define LS2_ON_PIN 9				// LS2 ON signal pin to SN754410 2A (pin 7)
+//#define LS2_OFF_PIN 10				// LS2 OFF signal pin to SN754410 1A (pin 6)
 
 #define LEDPIN 13					// pin to blink led at each beat
 
@@ -64,10 +64,10 @@ volatile int pSampleCounter = PRES_PER_PPG;
 // The following are counters initialized by commands or state changes in the main loop and decremented in the ISR
 volatile int ledON = 0;
 volatile int ledOFF = 0;
-volatile int ls1ONPulseCounter = 0;
-volatile int ls1OFFPulseCounter = 0;
-volatile int ls2ONPulseCounter = 0;
-volatile int ls2OFFPulseCounter = 0;
+//volatile int ls1ONPulseCounter = 0;
+//volatile int ls1OFFPulseCounter = 0;
+//volatile int ls2ONPulseCounter = 0;
+//volatile int ls2OFFPulseCounter = 0;
 
 // The following state flag indicates whether to schedule a read of the PPG 
 // sensors (even cycles) or the pressure sensors (odd cycles)
@@ -108,23 +108,23 @@ void setup()
 	pinMode(S1_PIN, OUTPUT);
 	pinMode(S2_PIN, OUTPUT);
 
-	pinMode(LS1_ON_PIN, OUTPUT);
-	pinMode(LS1_OFF_PIN, OUTPUT);
-	pinMode(LS2_ON_PIN, OUTPUT);
-	pinMode(LS2_OFF_PIN, OUTPUT);
+	//pinMode(LS1_ON_PIN, OUTPUT);
+	//pinMode(LS1_OFF_PIN, OUTPUT);
+	//pinMode(LS2_ON_PIN, OUTPUT);
+	//pinMode(LS2_OFF_PIN, OUTPUT);
 	
 	pinMode(LEDPIN, OUTPUT);
 
 	// Initialize output pins:
 	pumpSpeed = 0xFF;						// Turn pump off
 	analogWrite(PUMP_PIN, pumpSpeed);
-	digitalWrite(S1_PIN, 0);
-	digitalWrite(S2_PIN, 0);
+	digitalWrite(S1_PIN, 1);				// Turn S1 off
+	digitalWrite(S2_PIN, 1);				// Turn S2 off
 
-	digitalWrite(LS1_ON_PIN, 0);
-	digitalWrite(LS1_OFF_PIN, 0);
-	digitalWrite(LS2_ON_PIN, 0);
-	digitalWrite(LS2_OFF_PIN, 0);
+	//digitalWrite(LS1_ON_PIN, 0);
+	//digitalWrite(LS1_OFF_PIN, 0);
+	//digitalWrite(LS2_ON_PIN, 0);
+	//digitalWrite(LS2_OFF_PIN, 0);
 
 	for (i = 1; i < COMM_BUFFER_SIZE; ++i)
 	{
@@ -140,8 +140,8 @@ void setup()
 	spUSB.setPacketHandler(&OnUSBPacket);
 	spUSB.begin(115200);
 
-	//timer1InterruptSetup();
-	timer2InterruptSetup();
+	//timer1InterruptSetup();						// Using TIMER1 set for T = 1 ms, f = 1000 Hz
+	timer2InterruptSetup();						// Using TIMER2 set for T = 2 ms, f = 500 Hz
 }
 
 void OnUSBPacket(const uint8_t* buffer, size_t size)
@@ -301,7 +301,7 @@ void loop()
 
 					SendUSBPacket();
 
-					ToggleUserLED();
+					//ToggleUserLED();
 					// END TEST - Send a data packet to test serial communications response:
 
 			}
@@ -334,23 +334,19 @@ void loop()
 			break;
 
 		case 0x04:		// Latch LS1 ON
-			digitalWrite(S1_PIN, 1);
-			//LS1ON();
+			LS1ON();
 			break;
 
 		case 0x05:		// Latch LS1 OFF
-			digitalWrite(S1_PIN, 0);
-			//LS1OFF();
+			LS1OFF();
 			break;
 
 		case 0x06:		// Latch LS2 ON
-			digitalWrite(S2_PIN, 1);
-			//LS2ON();
+			LS2ON();
 			break;
 
 		case 0x07:		// Latch LS2 OFF
-			digitalWrite(S2_PIN, 0);
-			//LS2OFF();
+			LS2OFF();
 			break;
 
 		case 0x08:	// SetLoopPeriodMsgType
@@ -360,10 +356,10 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
-			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
-			pumpSpeed = inPacket[0x01];				// Set initial pump speed
-			analogWrite(PUMP_PIN, pumpSpeed);
+			LS1ON();								// Connect LS1 to pump
+			LS2ON();								// Connect cuff to LS1
+			pumpSpeed = inPacket[0x01];				// Read commanded initial pump speed
+			analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
 
 			// Read and set target cuff pressure:
 			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
@@ -374,8 +370,8 @@ void loop()
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
-			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
+			LS1ON();								// Connect LS1 to pump
+			LS2ON();								// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -384,8 +380,8 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
-			digitalWrite(S2_PIN, 0);				// Connect cuff to bleed port
+			LS1ON();								// Connect LS1 to pump
+			LS2OFF();								// Connect cuff to bleed port
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -397,8 +393,8 @@ void loop()
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			digitalWrite(S1_PIN, 0);				// Connect LS1 to atmosphere
-			digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
+			LS1OFF();								// Connect LS1 to atmosphere
+			LS2ON();								// Connect cuff to LS1
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -423,8 +419,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
-				digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
+				LS1ON();								// Connect LS1 to pump
+				LS2ON();								// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -446,8 +442,8 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				digitalWrite(S1_PIN, 1);				// Connect LS1 to pump
-				digitalWrite(S2_PIN, 1);				// Connect cuff to LS1
+				LS1ON();								// Connect LS1 to pump
+				LS2ON();								// Connect cuff to LS1
 
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
@@ -469,7 +465,7 @@ void loop()
 
 	// Send sensor data to host
 	// DONE: Check that the sensor data is new before sending to host
-	if (newSensorData && dataFeedActive)
+	if (newSensorData)
 	{
 		outPacket[0x00] = 0x18;					// SensorDataMsgType
 		outPacket[0x01] = lowByte(Signal);		// low byte of PPG sensor measurement
@@ -478,7 +474,6 @@ void loop()
 		outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
 		outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
 		outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
-
 		outPacket[0x07] = highByte(BPM);
 		outPacket[0x08] = lowByte(IBI);			// time interval between beats
 		outPacket[0x09] = highByte(IBI);

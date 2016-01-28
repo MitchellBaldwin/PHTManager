@@ -51,8 +51,10 @@ namespace PHTManager
 
         Byte receivedMessageType = 0xFF;
 
+        // Millisecond time counter for data samples received
+        
         // Structures to hold dynamic measurements from PHTM device
-        PHTMDataPoint curDataPoint = new PHTMDataPoint(0.0, 0, 0);
+        PHTMDataPoint curDataPoint = new PHTMDataPoint(0.0, 0, 0, 0, 0);
         PHTMDataPoints dataPointList = new PHTMDataPoints();
         PHTMDataPoint staticDataPoint = new PHTMDataPoint();
         
@@ -479,8 +481,8 @@ namespace PHTManager
                     PHMSerialPort.DiscardInBuffer();
                     
                     // Start the data feed upon connecting
-                    BuildCommMessage(StartDataFeed, dummy);
-                    SendCommandMessage();
+                    //BuildCommMessage(StartDataFeed, dummy);
+                    //SendCommandMessage();
                 }
                 catch (IOException ioe)
                 {
@@ -493,8 +495,8 @@ namespace PHTManager
                 if (PHMSerialPort.IsOpen)
                 {
                     // If the serial port is open and the data feed is active then stop the data feed before closing the port
-                    BuildCommMessage(StopDataFeed, dummy);
-                    SendCommandMessage();
+                    //BuildCommMessage(StopDataFeed, dummy);
+                    //SendCommandMessage();
                     // Give the serial port and embedded system time to process the message to stop the data feed
                     System.Threading.Thread.Sleep(1000);
                     PHMSerialPort.Close();
