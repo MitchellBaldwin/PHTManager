@@ -52,7 +52,6 @@
             this.bytePositionLabel = new System.Windows.Forms.Label();
             this.inBufferDisplayLabel = new System.Windows.Forms.Label();
             this.outBufferDisplayLabel = new System.Windows.Forms.Label();
-            this.phmspConnectCheckBox = new System.Windows.Forms.CheckBox();
             this.phmspDataBitsDisplayLabel = new System.Windows.Forms.Label();
             this.phmspParityDisplayLabel = new System.Windows.Forms.Label();
             this.phmspBaudRateDisplayLabel = new System.Windows.Forms.Label();
@@ -292,7 +291,6 @@
             this.systemPanel.Controls.Add(this.bytePositionLabel);
             this.systemPanel.Controls.Add(this.inBufferDisplayLabel);
             this.systemPanel.Controls.Add(this.outBufferDisplayLabel);
-            this.systemPanel.Controls.Add(this.phmspConnectCheckBox);
             this.systemPanel.Controls.Add(this.phmspDataBitsDisplayLabel);
             this.systemPanel.Controls.Add(this.phmspParityDisplayLabel);
             this.systemPanel.Controls.Add(this.phmspBaudRateDisplayLabel);
@@ -381,18 +379,6 @@
             this.outBufferDisplayLabel.Size = new System.Drawing.Size(59, 20);
             this.outBufferDisplayLabel.TabIndex = 40;
             this.outBufferDisplayLabel.Text = "OUT: ";
-            // 
-            // phmspConnectCheckBox
-            // 
-            this.phmspConnectCheckBox.AutoSize = true;
-            this.phmspConnectCheckBox.Location = new System.Drawing.Point(719, 10);
-            this.phmspConnectCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.phmspConnectCheckBox.Name = "phmspConnectCheckBox";
-            this.phmspConnectCheckBox.Size = new System.Drawing.Size(82, 21);
-            this.phmspConnectCheckBox.TabIndex = 39;
-            this.phmspConnectCheckBox.Text = "Connect";
-            this.phmspConnectCheckBox.UseVisualStyleBackColor = true;
-            this.phmspConnectCheckBox.CheckedChanged += new System.EventHandler(this.phmspConnectCheckBox_CheckedChanged);
             // 
             // phmspDataBitsDisplayLabel
             // 
@@ -625,7 +611,7 @@
             // 
             // PHMMainTimer
             // 
-            this.PHMMainTimer.Interval = 10;
+            this.PHMMainTimer.Interval = 20;
             this.PHMMainTimer.Tick += new System.EventHandler(this.PHMMainTimer_Tick);
             // 
             // phmDataZedGraph
@@ -693,7 +679,7 @@
             this.COMPortToolStripComboBox,
             this.startStopDataToolStripButton,
             this.saveDataToFileToolStripButton});
-            this.PHTMMainToolStrip.Location = new System.Drawing.Point(16, 354);
+            this.PHTMMainToolStrip.Location = new System.Drawing.Point(800, 328);
             this.PHTMMainToolStrip.Name = "PHTMMainToolStrip";
             this.PHTMMainToolStrip.Size = new System.Drawing.Size(113, 28);
             this.PHTMMainToolStrip.TabIndex = 59;
@@ -754,7 +740,7 @@
             this.TestControlPanel.Location = new System.Drawing.Point(801, 276);
             this.TestControlPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TestControlPanel.Name = "TestControlPanel";
-            this.TestControlPanel.Size = new System.Drawing.Size(313, 50);
+            this.TestControlPanel.Size = new System.Drawing.Size(313, 48);
             this.TestControlPanel.TabIndex = 64;
             // 
             // pulseLS1ONButton
@@ -864,6 +850,7 @@
             this.saveDataButton.TabIndex = 69;
             this.saveDataButton.Text = "Start Save Segment";
             this.saveDataButton.UseVisualStyleBackColor = true;
+            this.saveDataButton.Click += new System.EventHandler(this.saveDataButton_Click);
             // 
             // PHTManagerMain
             // 
@@ -950,7 +937,6 @@
         private System.Windows.Forms.Label bytePositionLabel;
         private System.Windows.Forms.Label inBufferDisplayLabel;
         private System.Windows.Forms.Label outBufferDisplayLabel;
-        private System.Windows.Forms.CheckBox phmspConnectCheckBox;
         private System.Windows.Forms.Label ppgSensitivityDisplayLabel;
         private System.Windows.Forms.Label phmspDataBitsDisplayLabel;
         private System.Windows.Forms.Label phmspParityDisplayLabel;

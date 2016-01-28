@@ -15,29 +15,22 @@
 #define LED_TIME 64
 
 // Sample count divisor for pressure sensor measurements relative to PPG sensor measurements:
-#define PRES_PER_PPG 10
+#define PRES_PER_PPG 20
 
 #define PPG1_PIN 0					// PPG sensor 1 (purple wire) analog signal pin A0
 #define CP_PIN 1					// Cuff pressure analog signal pin A1
+#define PPG2_PIN 2					// PPG sensor 2 (purple wire) analog signal pin A2
 
 #define FADE_PIN 5					// PWM pin to do fancy classy fading blink at each beat
 #define PUMP_PIN 6					// PWM control of the pump
 #define S1_PIN 2					// Solenoid valve 1 control pin
 #define S2_PIN 3					// Solenoid valve 2 control pin
 
-//#define LS1_ON_PIN 7				// LS1 ON signal pin to SN754410 1A (pin 2)
-//#define LS1_OFF_PIN 8				// LS1 OFF signal pin to SN754410 2A (pin 3)
-//#define LS2_ON_PIN 9				// LS2 ON signal pin to SN754410 2A (pin 7)
-//#define LS2_OFF_PIN 10				// LS2 OFF signal pin to SN754410 1A (pin 6)
-
 #define LEDPIN 13					// pin to blink led at each beat
 
-#define startbyte 0xF0
+//#define startbyte 0xF0
 #define COMM_BUFFER_SIZE 32
-
 #define PACKET_SIZE 30
-
-
 
 enum States
 {
@@ -64,23 +57,17 @@ volatile int pSampleCounter = PRES_PER_PPG;
 // The following are counters initialized by commands or state changes in the main loop and decremented in the ISR
 volatile int ledON = 0;
 volatile int ledOFF = 0;
-//volatile int ls1ONPulseCounter = 0;
-//volatile int ls1OFFPulseCounter = 0;
-//volatile int ls2ONPulseCounter = 0;
-//volatile int ls2OFFPulseCounter = 0;
-
-// The following state flag indicates whether to schedule a read of the PPG 
-// sensors (even cycles) or the pressure sensors (odd cycles)
-//volatile byte readSensors0 = 0x00;
 
 // The following are used in  the main loop as well aa in the interrupt service routine
-volatile int BPM;                   // calculated pulse rate, beats per minute
-volatile int Signal;                // holds the incoming raw PPG ADC signal
-volatile int CP;					// holds the incoming raw Cuff Pressure ADC signal
-volatile int IBI = 600;             // int that holds the time interval between beats; must be seeded 
-volatile boolean newSensorData;		// flag set in ISR indicating new sensor data is available
-volatile boolean Pulse = false;     // becomes true when a live heartbeat is detected. "False" when not a "live beat"
-volatile boolean QS = false;        // becomes true when the analysis algorithm in the ISR finds a beat
+volatile int BPM;							// calculated pulse rate, beats per minute
+volatile int PPG1;							// holds the incoming raw PPG1 ADC signal
+volatile int PPG2;							// holds the incoming raw PPG2 ADC signal
+volatile int CP;							// holds the incoming raw Cuff Pressure ADC signal
+volatile int IBI = 600;						// int that holds the time interval between beats; must be seeded 
+volatile boolean newSensorData;				// flag set in ISR indicating new sensor data is available
+volatile boolean Pulse = false;				// becomes true when a live heartbeat is detected. "False" when not a "live beat"
+volatile boolean QS = false;				// becomes true when the analysis algorithm in the ISR finds a beat
+volatile unsigned long sampleCounter = 0;	// used to determine pulse timing
 
 //  Variables
 int fadeRate = 0;					// used to fade LED on with PWM on fadePin
@@ -108,11 +95,6 @@ void setup()
 	pinMode(S1_PIN, OUTPUT);
 	pinMode(S2_PIN, OUTPUT);
 
-	//pinMode(LS1_ON_PIN, OUTPUT);
-	//pinMode(LS1_OFF_PIN, OUTPUT);
-	//pinMode(LS2_ON_PIN, OUTPUT);
-	//pinMode(LS2_OFF_PIN, OUTPUT);
-	
 	pinMode(LEDPIN, OUTPUT);
 
 	// Initialize output pins:
@@ -120,11 +102,6 @@ void setup()
 	analogWrite(PUMP_PIN, pumpSpeed);
 	digitalWrite(S1_PIN, 1);				// Turn S1 off
 	digitalWrite(S2_PIN, 1);				// Turn S2 off
-
-	//digitalWrite(LS1_ON_PIN, 0);
-	//digitalWrite(LS1_OFF_PIN, 0);
-	//digitalWrite(LS2_ON_PIN, 0);
-	//digitalWrite(LS2_OFF_PIN, 0);
 
 	for (i = 1; i < COMM_BUFFER_SIZE; ++i)
 	{
@@ -239,9 +216,6 @@ void loop()
 		// Set 'fadeRate' Variable to 255 to fade LED with pulse
 		fadeRate = 255;					// Makes the LED Fade Effect Happen
 		
-		// BPM and IBI have been determined - send pulse data to host
-		//serialOutputWhenBeatHappens();  // A Beat Happened, Output that to serial.     
-		
 		QS = false;                     // reset the Quantified Self flag for next time    
 	}
 	else {
@@ -261,7 +235,6 @@ void loop()
 	if (newCommandMsgReceived)
 	{
 		// Check message type; if it directs a mode change then set new mode and proceed accordingly
-		//commandMsgReceived = inBuffer[0x00];
 		newCommandMsgReceived = false;
 
 		// Commanded State settings should be made in this command parsing switch structure
@@ -284,8 +257,8 @@ void loop()
 				
 					// TEST - Send a data packet to test serial communications response:
 					outPacket[0x00] = 0x18;					// SensorDataMsgType
-					outPacket[0x01] = lowByte(Signal);		// low byte of PPG sensor measurement
-					outPacket[0x02] = highByte(Signal);		// high byte of PPG sensor measurement
+					outPacket[0x01] = lowByte(PPG1);		// low byte of PPG1 sensor measurement
+					outPacket[0x02] = highByte(PPG1);		// high byte of PPG1 sensor measurement
 					outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
 					outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
 					outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
@@ -293,8 +266,16 @@ void loop()
 					outPacket[0x07] = highByte(BPM);
 					outPacket[0x08] = lowByte(IBI);			// time interval between beats
 					outPacket[0x09] = highByte(IBI);
+					outPacket[0x0A] = lowByte(PPG2);		// low byte of PPG2 sensor measurement
+					outPacket[0x0B] = highByte(PPG2);		// high byte of PPG2 sensor measurement
 
-					for (i = 0x0A; i < PACKET_SIZE - 1; ++i)
+					// Break data timer (ms) into constituant bytes:
+					outPacket[0x0F] = sampleCounter / 16777216L;
+					outPacket[0x0E] = (sampleCounter - outPacket[0x0F] * 16777216L) / 65536L;
+					outPacket[0x0D] = (sampleCounter - outPacket[0x0E] * 65536L) / 256;
+					outPacket[0x0C] = sampleCounter - outPacket[0x0D] * 256;
+
+					for (i = 0x10; i < PACKET_SIZE - 1; ++i)
 					{
 						outPacket[i] = 0x00;
 					}
@@ -468,8 +449,8 @@ void loop()
 	if (newSensorData)
 	{
 		outPacket[0x00] = 0x18;					// SensorDataMsgType
-		outPacket[0x01] = lowByte(Signal);		// low byte of PPG sensor measurement
-		outPacket[0x02] = highByte(Signal);		// high byte of PPG sensor measurement
+		outPacket[0x01] = lowByte(PPG1);		// low byte of PPG1 sensor measurement
+		outPacket[0x02] = highByte(PPG1);		// high byte of PPG1 sensor measurement
 		outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
 		outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
 		outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
@@ -477,8 +458,16 @@ void loop()
 		outPacket[0x07] = highByte(BPM);
 		outPacket[0x08] = lowByte(IBI);			// time interval between beats
 		outPacket[0x09] = highByte(IBI);
+		outPacket[0x0A] = lowByte(PPG2);		// low byte of PPG2 sensor measurement
+		outPacket[0x0B] = highByte(PPG2);		// high byte of PPG2 sensor measurement
+		
+		// Break data timer (ms) into constituant bytes:
+		outPacket[0x0F] = sampleCounter / 16777216L;
+		outPacket[0x0E] = (sampleCounter - outPacket[0x0F] * 16777216L) / 65536L;
+		outPacket[0x0D] = (sampleCounter - outPacket[0x0E] * 65536L) / 256;
+		outPacket[0x0C] = sampleCounter - outPacket[0x0D] * 256;
 
-		for (i = 0x0A; i < PACKET_SIZE - 1; ++i)
+		for (i = 0x10; i < PACKET_SIZE - 1; ++i)
 		{
 			outPacket[i] = 0x00;
 		}

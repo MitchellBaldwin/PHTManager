@@ -61,6 +61,8 @@ namespace PHTManager
         // Objects used to graph data
         ZedGraph.PointPairList PPG1List = new ZedGraph.PointPairList();
         ZedGraph.LineItem PPG1Line;
+        ZedGraph.PointPairList PPG2List = new ZedGraph.PointPairList();
+        ZedGraph.LineItem PPG2Line;
         ZedGraph.PointPairList CPList = new ZedGraph.PointPairList();
         ZedGraph.LineItem CPLine;
         ZedGraph.PointPairList CuffPIDList = new ZedGraph.PointPairList();
@@ -206,6 +208,7 @@ namespace PHTManager
             phmMainPain.YAxis.MajorGrid.IsVisible = true;
 
             PPG1Line = phmMainPain.AddCurve("PPG1", PPG1List, Color.Red, ZedGraph.SymbolType.None);
+            PPG2Line = phmMainPain.AddCurve("PPG2", PPG2List, Color.Purple, ZedGraph.SymbolType.None);
 
             phmMainPain.Y2Axis.Title.Text = "P-cuff (mmHg)";
             phmMainPain.Y2Axis.Title.FontSpec.Size = 14;
@@ -292,6 +295,7 @@ namespace PHTManager
             PPG1List.Add(currentDataXTime, curDataPoint.PPG1);
             CPList.Add(currentDataXTime, curDataPoint.CP);
             CuffPIDList.Add(currentDataXTime, curDataPoint.CuffPID);
+            PPG2List.Add(currentDataXTime, curDataPoint.PPG2);
 
             // Check if right graph margin has been reached; if so, scroll graph
             if (currentDataXTime > phmMainPain.XAxis.Scale.Max) 
@@ -310,14 +314,14 @@ namespace PHTManager
             pulseRateDisplayLabel.Text = curDataPoint.BPM.ToString();
             pulsePeriodDisplayLabel.Text = curDataPoint.IBI.ToString();
 
-            if (dataFeedActive)
-            {
-                this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.on;
-            }
-            else
-            {
-                this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.off;
-            }
+            //if (dataFeedActive)
+            //{
+            //    this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.on;
+            //}
+            //else
+            //{
+            //    this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.off;
+            //}
             dataFeedActive = false;
 
         }
@@ -387,11 +391,16 @@ namespace PHTManager
                     curDataPoint.CPRaw = (ushort)(packetBuffer[0x03] + packetBuffer[0x04] * 256);
                     //curDataPoint.TargetCuffPressure = Int32.Parse(targetPressureDisplayLabel.Text);
 
-                    dataPointList.Add(curDataPoint);
-
                     curDataPoint.CuffPID = packetBuffer[0x05];
                     curDataPoint.BPM = packetBuffer[0x06] + packetBuffer[0x07] * 256;
                     curDataPoint.IBI = packetBuffer[0x08] + packetBuffer[0x09] * 256;
+                    curDataPoint.PPG2 = packetBuffer[0x0A] + packetBuffer[0x0B] * 256;
+                    curDataPoint.DataTimeMS = packetBuffer[0x0C]
+                                              + packetBuffer[0x0D] * 256
+                                              + packetBuffer[0x0E] * 65536
+                                              + packetBuffer[0x0F] * 16777216;
+
+                    dataPointList.Add(curDataPoint);
                 }
 
             }
@@ -404,7 +413,6 @@ namespace PHTManager
             catch (IOException ioe)
             {
                 Console.WriteLine(ioe.GetType().Name + ": " + ioe.Message);
-                phmspConnectCheckBox.Checked = false;
             }
 
         }
@@ -480,25 +488,18 @@ namespace PHTManager
 
                     PHMSerialPort.DiscardInBuffer();
                     
-                    // Start the data feed upon connecting
-                    //BuildCommMessage(StartDataFeed, dummy);
-                    //SendCommandMessage();
                 }
                 catch (IOException ioe)
                 {
                     Console.WriteLine(ioe.GetType().Name + ": " + ioe.Message);
-                    //phmspConnectCheckBox.Checked = false;
                 }
             }
             else
             {
                 if (PHMSerialPort.IsOpen)
                 {
-                    // If the serial port is open and the data feed is active then stop the data feed before closing the port
-                    //BuildCommMessage(StopDataFeed, dummy);
-                    //SendCommandMessage();
                     // Give the serial port and embedded system time to process the message to stop the data feed
-                    System.Threading.Thread.Sleep(1000);
+                    //System.Threading.Thread.Sleep(1000);
                     PHMSerialPort.Close();
                 }
                 PHMMainTimer.Enabled = false;
@@ -547,31 +548,31 @@ namespace PHTManager
         {
             Boolean wasOpen = false;
 
-            if (phmspConnectCheckBox.Checked)
+            if (PHMSerialPort.IsOpen)
             {
                 wasOpen = true;
-                phmspConnectCheckBox.Checked = false;
+                PHMSerialPort.Close();
             }
             PHMSerialPort.PortName = COMPortToolStripComboBox.Text;
             if (wasOpen)
             {
-                phmspConnectCheckBox.Checked = true;
+                PHMSerialPort.Open();
             }
         }
 
         private void startStopDataToolStripButton_Click(object sender, EventArgs e)
         {
-            if (DataFeedActive)
-            {
-                BuildCommMessage(StopDataFeed, dummy);
-                SendCommandMessage();
-                DataFeedActive = false;
-            }
-            else
-            {
-                BuildCommMessage(StartDataFeed, dummy);
-                SendCommandMessage();
-            }
+            //if (DataFeedActive)
+            //{
+            //    BuildCommMessage(StopDataFeed, dummy);
+            //    SendCommandMessage();
+            //    DataFeedActive = false;
+            //}
+            //else
+            //{
+            //    BuildCommMessage(StartDataFeed, dummy);
+            //    SendCommandMessage();
+            //}
         }
 
         private void showAllBufferUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -598,9 +599,9 @@ namespace PHTManager
             if (testModeCheckBox.Checked)
             {
                 // Place PHM device in test mode:
-                dummy[0] = 0x00;
-                BuildCommMessage(SetModeMsgType, dummy);
-                SendCommandMessage();
+                //dummy[0] = 0x00;
+                //BuildCommMessage(SetModeMsgType, dummy);
+                //SendCommandMessage();
                 TestControlPanel.Enabled = true;
                 //pulseLS1ONButton.Enabled = true;
                 //pulseLS1OFFButton.Enabled = true;
@@ -610,9 +611,9 @@ namespace PHTManager
             else
             {
                 // Place PHM device in normal mode:
-                dummy[0] = 0x01;
-                BuildCommMessage(SetModeMsgType, dummy);
-                SendCommandMessage();
+                //dummy[0] = 0x01;
+                //BuildCommMessage(SetModeMsgType, dummy);
+                //SendCommandMessage();
                 TestControlPanel.Enabled = false;
                 //pulseLS1ONButton.Enabled = false;
                 //pulseLS1OFFButton.Enabled = false;
@@ -640,7 +641,45 @@ namespace PHTManager
                             // Try creating a .NET DateTime object from the saved data point time stamp field:
                             //DateTime time = new DateTime(dp.DataTime);
                             row.Add(time.DateTime.ToString("mm:ss") + "." + time.DateTime.Millisecond.ToString("000"));
+                            row.Add(dp.DataTimeMS.ToString());
                             row.Add(dp.PPG1.ToString());
+                            row.Add(dp.PPG2.ToString());
+                            row.Add(dp.CP.ToString());
+                            writer.WriteRow(row);
+                        }
+                    }
+                    Console.WriteLine("Data saved to: {0}", PHTMSaveDataFileDialog.FileName);
+                    dataPointList.Clear();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not save file to disk; original error: " + ex.Message);
+                }
+            }
+        }
+
+        private void saveDataButton_Click(object sender, EventArgs e)
+        {
+            String PHTMHostPath = Application.StartupPath;
+            PHTMSaveDataFileDialog.InitialDirectory = PHTMHostPath;
+            Console.WriteLine("Executable path: {0}", PHTMHostPath);
+
+            if (PHTMSaveDataFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    using (CSVFileWriter writer = new CSVFileWriter(PHTMSaveDataFileDialog.FileName))
+                    {
+                        foreach (PHTMDataPoint dp in dataPointList)
+                        {
+                            CSVRow row = new CSVRow();
+                            ZedGraph.XDate time = new ZedGraph.XDate(dp.DataTime);
+                            // Try creating a .NET DateTime object from the saved data point time stamp field:
+                            //DateTime time = new DateTime(dp.DataTime);
+                            row.Add(time.DateTime.ToString("hh:mm:ss") + "." + time.DateTime.Millisecond.ToString("000"));
+                            row.Add(dp.DataTimeMS.ToString());
+                            row.Add(dp.PPG1.ToString());
+                            row.Add(dp.PPG2.ToString());
                             row.Add(dp.CP.ToString());
                             writer.WriteRow(row);
                         }
