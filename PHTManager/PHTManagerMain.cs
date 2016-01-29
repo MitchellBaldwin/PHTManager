@@ -20,8 +20,8 @@ namespace PHTManager
 
         public const Byte TextMsgMsgType = 0x00;            // The packet contains a text message (bi-directional)
         public const Byte SetModeMsgType = 0x01;            // The packet is a Set Mode command (Host to PHTMD)
-        public const Byte StartDataFeed = 0x02;             // Start the serial data stream from the PHTM device (Host to PHTMD)
-        public const Byte StopDataFeed = 0x03;              // Stop the serial data stream from the PHTM device (Host to PHTMD)
+        public const Byte StartDataSave = 0x02;             // Start the serial data stream from the PHTM device (Host to PHTMD)
+        public const Byte EndDataSave = 0x03;               // Stop the serial data stream from the PHTM device (Host to PHTMD)
         public const Byte LS1ONMsgType = 0x04;              // Connect LS2 to pump
         public const Byte LS1OFFMsgType = 0x05;             // Connect LS2 to atmosphere
         public const Byte LS2ONMsgType = 0x06;              // Connect cuff to LS1
@@ -29,6 +29,8 @@ namespace PHTManager
 
         public const Byte SetLoopPeriodMsgType = 0x08;      // Sets the main loop delay time (Host to PHTMD)
 
+        public const Byte ToggleHRCalculation = 0x09;       // Toggle calculation & display of heart rate (BPM) and IBI
+        
         public const Byte FillCuffMsgType = 0x10;           // Set valves and pump to fill cuff to target pressure; command packet includes (initial) 
                                                             // pump speed setting (Host to PHTMD)
         public const Byte HoldCuffMsgType = 0x11;           // Set valves to hold cuff pressure (Host to PHTMD)
@@ -71,11 +73,11 @@ namespace PHTManager
         #region Flags
         // Flag indicating whether the data feed from the embedded system is active
         //(set in the DataReceived event handler)
-        Boolean dataFeedActive = false;
-        public Boolean DataFeedActive
+        Boolean dataSaveActive = false;
+        public Boolean DataSaveActive
         {
-            get { return dataFeedActive; }
-            set { dataFeedActive = value; }
+            get { return dataSaveActive; }
+            set { dataSaveActive = value; }
         }
 
         // Switch for displaying contents of commands sent to the PHM Main Controller
@@ -322,7 +324,7 @@ namespace PHTManager
             //{
             //    this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.off;
             //}
-            dataFeedActive = false;
+            //dataSaveActive = false;
 
         }
 
@@ -341,7 +343,6 @@ namespace PHTManager
             {
                 PHMSerialPort.Read(inBuffer, 0, COMM_BUFFER_SIZE);
                 commTimeoutErrorFlag = false;      // If no exception was thrown then we should have receiced a complete buffer (COMM_BUFFER_SIZE bits)
-                dataFeedActive = true;
 
                 // Check that the first byte contains the CommStartByte
                 if (inBuffer[COMM_BUFFER_SIZE - 1] != CommFramingByte)
@@ -400,7 +401,10 @@ namespace PHTManager
                                               + packetBuffer[0x0E] * 65536
                                               + packetBuffer[0x0F] * 16777216;
 
-                    dataPointList.Add(curDataPoint);
+                    if (DataSaveActive)
+                    {
+                        dataPointList.Add(curDataPoint);
+                    }
                 }
 
             }
@@ -622,76 +626,59 @@ namespace PHTManager
             }
         }
 
-        private void saveDataToFileToolStripButton_Click(object sender, EventArgs e)
-        {
-            String PHTMHostPath = Application.StartupPath;
-            PHTMSaveDataFileDialog.InitialDirectory = PHTMHostPath;
-            Console.WriteLine("Executable path: {0}", PHTMHostPath);
-
-            if (PHTMSaveDataFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                try
-                {
-                    using (CSVFileWriter writer = new CSVFileWriter(PHTMSaveDataFileDialog.FileName))
-                    {
-                        foreach (PHTMDataPoint dp in dataPointList)
-                        {
-                            CSVRow row = new CSVRow();
-                            ZedGraph.XDate time = new ZedGraph.XDate(dp.DataTime);
-                            // Try creating a .NET DateTime object from the saved data point time stamp field:
-                            //DateTime time = new DateTime(dp.DataTime);
-                            row.Add(time.DateTime.ToString("mm:ss") + "." + time.DateTime.Millisecond.ToString("000"));
-                            row.Add(dp.DataTimeMS.ToString());
-                            row.Add(dp.PPG1.ToString());
-                            row.Add(dp.PPG2.ToString());
-                            row.Add(dp.CP.ToString());
-                            writer.WriteRow(row);
-                        }
-                    }
-                    Console.WriteLine("Data saved to: {0}", PHTMSaveDataFileDialog.FileName);
-                    dataPointList.Clear();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Could not save file to disk; original error: " + ex.Message);
-                }
-            }
-        }
-
         private void saveDataButton_Click(object sender, EventArgs e)
         {
-            String PHTMHostPath = Application.StartupPath;
-            PHTMSaveDataFileDialog.InitialDirectory = PHTMHostPath;
-            Console.WriteLine("Executable path: {0}", PHTMHostPath);
-
-            if (PHTMSaveDataFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (DataSaveActive)
             {
-                try
+                BuildCommMessage(EndDataSave, dummy);
+                SendCommandMessage();
+                DataSaveActive = false;
+                saveDataButton.Text = "Start Save Segment";
+
+                String PHTMHostPath = Application.StartupPath;
+                PHTMSaveDataFileDialog.InitialDirectory = PHTMHostPath;
+                Console.WriteLine("Executable path: {0}", PHTMHostPath);
+
+                if (PHTMSaveDataFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (CSVFileWriter writer = new CSVFileWriter(PHTMSaveDataFileDialog.FileName))
+                    try
                     {
-                        foreach (PHTMDataPoint dp in dataPointList)
+                        using (CSVFileWriter writer = new CSVFileWriter(PHTMSaveDataFileDialog.FileName))
                         {
-                            CSVRow row = new CSVRow();
-                            ZedGraph.XDate time = new ZedGraph.XDate(dp.DataTime);
-                            // Try creating a .NET DateTime object from the saved data point time stamp field:
-                            //DateTime time = new DateTime(dp.DataTime);
-                            row.Add(time.DateTime.ToString("hh:mm:ss") + "." + time.DateTime.Millisecond.ToString("000"));
-                            row.Add(dp.DataTimeMS.ToString());
-                            row.Add(dp.PPG1.ToString());
-                            row.Add(dp.PPG2.ToString());
-                            row.Add(dp.CP.ToString());
-                            writer.WriteRow(row);
+                            dataPointList.RemoveAt(0);                  // Drop first data point
+                            foreach (PHTMDataPoint dp in dataPointList)
+                            {
+                                CSVRow row = new CSVRow();
+                                ZedGraph.XDate time = new ZedGraph.XDate(dp.DataTime);
+                                // Try creating a .NET DateTime object from the saved data point time stamp field:
+                                //DateTime time = new DateTime(dp.DataTime);
+                                row.Add(time.DateTime.ToString("mm:ss") + "." + time.DateTime.Millisecond.ToString("000"));
+                                row.Add(dp.DataTimeMS.ToString());
+                                row.Add(dp.PPG1.ToString());
+                                row.Add(dp.PPG2.ToString());
+                                row.Add(dp.CP.ToString());
+                                writer.WriteRow(row);
+                            }
                         }
+                        Console.WriteLine("Data saved to: {0}", PHTMSaveDataFileDialog.FileName);
+                        dataPointList.Clear();
                     }
-                    Console.WriteLine("Data saved to: {0}", PHTMSaveDataFileDialog.FileName);
-                    dataPointList.Clear();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Could not save file to disk; original error: " + ex.Message);
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: Could not save file to disk; original error: " + ex.Message);
+                    }
                 }
             }
+            else
+            {
+                BuildCommMessage(StartDataSave, dummy);
+                SendCommandMessage();
+                DataSaveActive = true;
+                saveDataButton.Text = "End Save Segment";
+                dataPointList.Clear();
+
+            }
+
         }
 
         private void showPumpPIDOnGraphCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -773,6 +760,13 @@ namespace PHTManager
         {
             curDataPoint.CuffPID = (int)pumpPIDNumericUpDown.Value;
         }
+
+        private void calculatePulseRateCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            BuildCommMessage(ToggleHRCalculation, dummy);
+            SendCommandMessage();
+        }
+
         #endregion Menu, toolbar and control event handlers
 
     }

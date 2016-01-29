@@ -80,8 +80,6 @@
             this.pulsePeriodDisplayLabel = new System.Windows.Forms.Label();
             this.PHTMMainToolStrip = new System.Windows.Forms.ToolStrip();
             this.COMPortToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
-            this.startStopDataToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.saveDataToFileToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PHTMSaveDataFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.TestControlPanel = new System.Windows.Forms.Panel();
             this.pulseLS1ONButton = new System.Windows.Forms.Button();
@@ -93,6 +91,7 @@
             this.pumpPIDNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.connectButton = new System.Windows.Forms.Button();
             this.saveDataButton = new System.Windows.Forms.Button();
+            this.calculatePulseRateCheckBox = new System.Windows.Forms.CheckBox();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
@@ -139,7 +138,7 @@
             this.cuffPressureDisplayLabel.Name = "cuffPressureDisplayLabel";
             this.cuffPressureDisplayLabel.Size = new System.Drawing.Size(301, 84);
             this.cuffPressureDisplayLabel.TabIndex = 0;
-            this.cuffPressureDisplayLabel.Text = "95";
+            this.cuffPressureDisplayLabel.Text = "0";
             this.cuffPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // systolicPressurePanel
@@ -178,12 +177,13 @@
             this.lastSystolicPressureDisplayLabel.Name = "lastSystolicPressureDisplayLabel";
             this.lastSystolicPressureDisplayLabel.Size = new System.Drawing.Size(301, 84);
             this.lastSystolicPressureDisplayLabel.TabIndex = 0;
-            this.lastSystolicPressureDisplayLabel.Text = "92";
+            this.lastSystolicPressureDisplayLabel.Text = "0";
             this.lastSystolicPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pulseRatePanel
             // 
             this.pulseRatePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.pulseRatePanel.Controls.Add(this.calculatePulseRateCheckBox);
             this.pulseRatePanel.Controls.Add(this.pulseRateLebel);
             this.pulseRatePanel.Controls.Add(this.pulseRateDisplayLabel);
             this.pulseRatePanel.Location = new System.Drawing.Point(465, 276);
@@ -611,7 +611,7 @@
             // 
             // PHMMainTimer
             // 
-            this.PHMMainTimer.Interval = 20;
+            this.PHMMainTimer.Interval = 10;
             this.PHMMainTimer.Tick += new System.EventHandler(this.PHMMainTimer_Tick);
             // 
             // phmDataZedGraph
@@ -676,9 +676,7 @@
             this.PHTMMainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.PHTMMainToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.PHTMMainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.COMPortToolStripComboBox,
-            this.startStopDataToolStripButton,
-            this.saveDataToFileToolStripButton});
+            this.COMPortToolStripComboBox});
             this.PHTMMainToolStrip.Location = new System.Drawing.Point(800, 328);
             this.PHTMMainToolStrip.Name = "PHTMMainToolStrip";
             this.PHTMMainToolStrip.Size = new System.Drawing.Size(113, 28);
@@ -701,28 +699,6 @@
             this.COMPortToolStripComboBox.Size = new System.Drawing.Size(99, 28);
             this.COMPortToolStripComboBox.Text = global::PHTManager.Properties.Settings.Default.LastCOMPortSetting;
             this.COMPortToolStripComboBox.TextChanged += new System.EventHandler(this.COMPortToolStripComboBox_TextChanged);
-            // 
-            // startStopDataToolStripButton
-            // 
-            this.startStopDataToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.on;
-            this.startStopDataToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.startStopDataToolStripButton.Name = "startStopDataToolStripButton";
-            this.startStopDataToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.startStopDataToolStripButton.Text = "Start / Stop";
-            this.startStopDataToolStripButton.Visible = false;
-            this.startStopDataToolStripButton.Click += new System.EventHandler(this.startStopDataToolStripButton_Click);
-            // 
-            // saveDataToFileToolStripButton
-            // 
-            this.saveDataToFileToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveDataToFileToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveDataToFileToolStripButton.Image")));
-            this.saveDataToFileToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveDataToFileToolStripButton.Name = "saveDataToFileToolStripButton";
-            this.saveDataToFileToolStripButton.Size = new System.Drawing.Size(28, 28);
-            this.saveDataToFileToolStripButton.Text = "Save data to a CSV file";
-            this.saveDataToFileToolStripButton.Visible = false;
-            this.saveDataToFileToolStripButton.Click += new System.EventHandler(this.saveDataToFileToolStripButton_Click);
             // 
             // PHTMSaveDataFileDialog
             // 
@@ -852,6 +828,16 @@
             this.saveDataButton.UseVisualStyleBackColor = true;
             this.saveDataButton.Click += new System.EventHandler(this.saveDataButton_Click);
             // 
+            // calculatePulseRateCheckBox
+            // 
+            this.calculatePulseRateCheckBox.AutoSize = true;
+            this.calculatePulseRateCheckBox.Location = new System.Drawing.Point(16, 11);
+            this.calculatePulseRateCheckBox.Name = "calculatePulseRateCheckBox";
+            this.calculatePulseRateCheckBox.Size = new System.Drawing.Size(18, 17);
+            this.calculatePulseRateCheckBox.TabIndex = 2;
+            this.calculatePulseRateCheckBox.UseVisualStyleBackColor = true;
+            this.calculatePulseRateCheckBox.CheckedChanged += new System.EventHandler(this.calculatePulseRateCheckBox_CheckedChanged);
+            // 
             // PHTManagerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -898,6 +884,7 @@
             this.cuffPressureDisplayPanel.ResumeLayout(false);
             this.systolicPressurePanel.ResumeLayout(false);
             this.pulseRatePanel.ResumeLayout(false);
+            this.pulseRatePanel.PerformLayout();
             this.targeyPressurePanel.ResumeLayout(false);
             this.systemPanel.ResumeLayout(false);
             this.systemPanel.PerformLayout();
@@ -962,8 +949,6 @@
         private System.Windows.Forms.Label pulsePeriodDisplayLabel;
         private System.Windows.Forms.ToolStrip PHTMMainToolStrip;
         private System.Windows.Forms.ToolStripComboBox COMPortToolStripComboBox;
-        private System.Windows.Forms.ToolStripButton startStopDataToolStripButton;
-        private System.Windows.Forms.ToolStripButton saveDataToFileToolStripButton;
         private System.Windows.Forms.SaveFileDialog PHTMSaveDataFileDialog;
         private System.Windows.Forms.Panel TestControlPanel;
         private System.Windows.Forms.Button pulseLS1ONButton;
@@ -975,6 +960,7 @@
         private System.Windows.Forms.NumericUpDown pumpPIDNumericUpDown;
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Button saveDataButton;
+        private System.Windows.Forms.CheckBox calculatePulseRateCheckBox;
     }
 }
 

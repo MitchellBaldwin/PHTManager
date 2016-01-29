@@ -16,6 +16,7 @@
 
 // Sample count divisor for pressure sensor measurements relative to PPG sensor measurements:
 #define PRES_PER_PPG 20
+#define CPHISTORY_SIZE 10			// Number of cuff pressure samples to average
 
 #define PPG1_PIN 0					// PPG sensor 1 (purple wire) analog signal pin A0
 #define CP_PIN 1					// Cuff pressure analog signal pin A1
@@ -59,7 +60,7 @@ volatile int ledON = 0;
 volatile int ledOFF = 0;
 
 // The following are used in  the main loop as well aa in the interrupt service routine
-volatile int BPM;							// calculated pulse rate, beats per minute
+volatile int BPM = 0;						// calculated pulse rate, beats per minute
 volatile int PPG1;							// holds the incoming raw PPG1 ADC signal
 volatile int PPG2;							// holds the incoming raw PPG2 ADC signal
 volatile int CP;							// holds the incoming raw Cuff Pressure ADC signal
@@ -71,7 +72,7 @@ volatile unsigned long sampleCounter = 0;	// used to determine pulse timing
 
 //  Variables
 int fadeRate = 0;					// used to fade LED on with PWM on fadePin
-int pumpSpeed = 0;					// PWM setting for cuff pump
+int pumpSpeed = 0xFF;				// PWM setting for cuff pump
 uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
 int targetCP = 0;					// Target cuff pressure - raw ACD equivalent value
 
@@ -81,7 +82,9 @@ PacketSerial spUSB;
 bool newCommandMsgReceived = false;	// Flag indicating a new commang message was received over the spUSB port
 uint8_t commandMsgReceived = 0x00;	// Initialize the type of command received
 
-boolean dataFeedActive = false;		// flag to turn data feed to host on or off
+boolean dataSaveActive = false;		// Flag indicating whether host is accumulating a data segment to save
+boolean calculateHR = false;		// Flag indicating whether ISR should calculate heart rate and IBI
+									// (clear to speed ISR execution)
 
 // Regards Serial OutPut  -- Set This Up to your needs
 static boolean serialVisual = false;   // Set to 'false' by Default.  Re-set to 'true' to see Arduino Serial Monitor ASCII Visual Pulse 
@@ -299,18 +302,14 @@ void loop()
 			}
 			break;
 
-		case 0x02:		// Start serial data feed to host
-			// Set flag indicating whether or not to send data to the Host
-			dataFeedActive = true;
+		case 0x02:		// Host program is starting a save data segment, so clear the sample counter
+			sampleCounter = 0;
+			dataSaveActive = true;
 			break;
 
 		case 0x03:		// Stop serial data feed to host
-			// Set flag indicating whether or not to send data to the Host
-			dataFeedActive = false;
-			
-			// If we're turning off the data feed then clear the serial transmission buffer
-			//to help ensure frame synchronization when transmission is restarted
-			//Serial.flush();		// Wait for the hardware serial transmission buffer to clear
+			// Clear the flag
+			dataSaveActive = false;
 			
 			break;
 
@@ -334,6 +333,19 @@ void loop()
 			// Change main loop period to value (in ms) commanded by Host
 			loopPeriod = inPacket[0x02] * 0xFF + inPacket[0x01];
 			loopHalfPeriod = loopPeriod / 2;
+			break;
+
+		case 0x09:	// ToggleHRCalculation
+			if (calculateHR)
+			{
+				calculateHR = false;
+				BPM = 0;
+				IBI = 30000;
+			}
+			else
+			{
+				calculateHR = true;
+			}
 			break;
 
 		case 0x10:	// FillCuffMsgType
@@ -363,11 +375,11 @@ void loop()
 		case 0x12:	// BleedCuffMsgTypee
 			LS1ON();								// Connect LS1 to pump
 			LS2OFF();								// Connect cuff to bleed port
-			pumpSpeed = 0xFF;						// Turn pump off
+			pumpSpeed = inPacket[0x01];				// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Read and set target cuff pressure:
-			targetCP = inPacket[0x02] * 0xFF + inPacket[0x01];
+			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
 
 			// Set state:
 			State = Bleed;
