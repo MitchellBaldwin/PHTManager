@@ -198,7 +198,6 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
 	if (--pSampleCounter <= 0)
 	{
 		int cpTotal = 0;
-
 		for (int i = 0; i < CPHISTORY_SIZE - 1; ++i)
 		{
 			cpHistory[i] = cpHistory[i + 1];
@@ -206,11 +205,35 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
 		}
 		cpHistory[CPHISTORY_SIZE - 1] = analogRead(CP_PIN);	// read cuff pressure
 		cpTotal += cpHistory[CPHISTORY_SIZE - 1];
-		CP = cpTotal / CPHISTORY_SIZE;
+		CP = cpTotal / CPHISTORY_SIZE;						// calculate cuff pressure average
 
 		PPG2 = analogRead(PPG2_PIN);						// read PPG Sensor 2
 
 		pSampleCounter = PRES_PER_PPG;						// reset counter
+
+		outPacket[0x00] = 0x18;					// SensorDataMsgType
+		outPacket[0x01] = lowByte(PPG1);		// low byte of PPG1 sensor measurement
+		outPacket[0x02] = highByte(PPG1);		// high byte of PPG1 sensor measurement
+		outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
+		outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
+		outPacket[0x05] = pumpSpeed;			// Output setting from Cuff PID controller
+		outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
+		outPacket[0x07] = highByte(BPM);
+		outPacket[0x08] = lowByte(IBI);			// time interval between beats
+		outPacket[0x09] = highByte(IBI);
+		outPacket[0x0A] = lowByte(PPG2);		// low byte of PPG2 sensor measurement
+		outPacket[0x0B] = highByte(PPG2);		// high byte of PPG2 sensor measurement
+
+		// Break data timer (ms) into constituant bytes:
+		outPacket[0x0F] = sampleCounter / 16777216L;
+		outPacket[0x0E] = (sampleCounter - outPacket[0x0F] * 16777216L) / 65536L;
+		outPacket[0x0D] = (sampleCounter - outPacket[0x0E] * 65536L) / 256;
+		outPacket[0x0C] = sampleCounter - outPacket[0x0D] * 256;
+
+		for (int i = 0x10; i < PACKET_SIZE - 1; ++i)
+		{
+			outPacket[i] = 0x00;
+		}
 
 		// DONE: Schedule data transmission to host
 		newSensorData = true;

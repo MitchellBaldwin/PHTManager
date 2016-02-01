@@ -53,8 +53,6 @@ namespace PHTManager
 
         Byte receivedMessageType = 0xFF;
 
-        // Millisecond time counter for data samples received
-        
         // Structures to hold dynamic measurements from PHTM device
         PHTMDataPoint curDataPoint = new PHTMDataPoint(0.0, 0, 0, 0, 0);
         PHTMDataPoints dataPointList = new PHTMDataPoints();
@@ -513,41 +511,6 @@ namespace PHTManager
             }
         }
 
-        private void phmspConnectCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (phmspConnectCheckBox.Checked)
-            //{
-            //    try
-            //    {
-            //        PHMSerialPort.Open();
-            //        PHMMainTimer.Enabled = true;
-            //        testModeCheckBox.Enabled = true;
-            //        commErrorDisplayLabel.Text = "Connected";
-            //    }
-            //    catch (IOException ioe)
-            //    {
-            //        Console.WriteLine(ioe.GetType().Name + ": " + ioe.Message);
-            //        phmspConnectCheckBox.Checked = false;
-            //    }
-            //}
-            //else
-            //{
-            //    if (PHMSerialPort.IsOpen)
-            //    {
-            //        // If the serial port is open and the data feed is active then stop the data feed before closing the port
-            //        BuildCommMessage(StopDataFeed, dummy);
-            //        SendCommandMessage();
-            //        // Give the serial port and embedded system time to process the message to stop the data feed
-            //        System.Threading.Thread.Sleep(1000);
-
-            //        PHMSerialPort.Close();
-            //        PHMMainTimer.Enabled = false;
-            //        testModeCheckBox.Enabled = false;
-            //        commErrorDisplayLabel.Text = "Not connected";
-            //    }
-            //}
-        }
-
         private void COMPortToolStripComboBox_TextChanged(object sender, EventArgs e)
         {
             Boolean wasOpen = false;
@@ -562,21 +525,6 @@ namespace PHTManager
             {
                 PHMSerialPort.Open();
             }
-        }
-
-        private void startStopDataToolStripButton_Click(object sender, EventArgs e)
-        {
-            //if (DataFeedActive)
-            //{
-            //    BuildCommMessage(StopDataFeed, dummy);
-            //    SendCommandMessage();
-            //    DataFeedActive = false;
-            //}
-            //else
-            //{
-            //    BuildCommMessage(StartDataFeed, dummy);
-            //    SendCommandMessage();
-            //}
         }
 
         private void showAllBufferUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)

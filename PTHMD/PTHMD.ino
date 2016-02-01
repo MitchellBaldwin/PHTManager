@@ -4,6 +4,7 @@
 // Base timer code from: Arduino timer CTC interrupt example (www.engblaze.com)
 
 // avr-libc library includes
+#include <PID_v1.h>
 #include <PacketSerial.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -72,8 +73,14 @@ volatile unsigned long sampleCounter = 0;	// used to determine pulse timing
 
 //  Variables
 int fadeRate = 0;					// used to fade LED on with PWM on fadePin
+
+double dCP;
+double dPumpSpeed = 255.0;
+double dTargetCP = 0.0;
+PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.2, 0.1, REVERSE);
+
+//uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
 int pumpSpeed = 0xFF;				// PWM setting for cuff pump
-uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
 int targetCP = 0;					// Target cuff pressure - raw ACD equivalent value
 
 int loopHalfPeriod = 250;			// Main loop period / 2 (ms) - can be set by Host
@@ -103,6 +110,10 @@ void setup()
 	// Initialize output pins:
 	pumpSpeed = 0xFF;						// Turn pump off
 	analogWrite(PUMP_PIN, pumpSpeed);
+	dCP = analogRead(CP_PIN);
+	dTargetCP = 0.0;
+	pumpPID.SetMode(MANUAL);
+
 	digitalWrite(S1_PIN, 1);				// Turn S1 off
 	digitalWrite(S2_PIN, 1);				// Turn S2 off
 
@@ -264,7 +275,7 @@ void loop()
 					outPacket[0x02] = highByte(PPG1);		// high byte of PPG1 sensor measurement
 					outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
 					outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
-					outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
+					outPacket[0x05] = pumpSpeed;			// Output setting from Cuff PID controller
 					outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
 					outPacket[0x07] = highByte(BPM);
 					outPacket[0x08] = lowByte(IBI);			// time interval between beats
@@ -351,11 +362,13 @@ void loop()
 		case 0x10:	// FillCuffMsgType
 			LS1ON();								// Connect LS1 to pump
 			LS2ON();								// Connect cuff to LS1
-			pumpSpeed = inPacket[0x01];				// Read commanded initial pump speed
-			analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
+			//pumpSpeed = inPacket[0x01];			// Read commanded initial pump speed
+			//analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
 
 			// Read and set target cuff pressure:
 			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
+			dTargetCP = targetCP;
+			pumpPID.SetMode(AUTOMATIC);
 
 			// Set state:
 			State = Fill;
@@ -365,6 +378,7 @@ void loop()
 		case 0x11:	// HoldCuffMsgType
 			LS1ON();								// Connect LS1 to pump
 			LS2ON();								// Connect cuff to LS1
+			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -375,11 +389,13 @@ void loop()
 		case 0x12:	// BleedCuffMsgTypee
 			LS1ON();								// Connect LS1 to pump
 			LS2OFF();								// Connect cuff to bleed port
-			pumpSpeed = inPacket[0x01];				// Turn pump off
+			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Read and set target cuff pressure:
 			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
+			dTargetCP = targetCP;
 
 			// Set state:
 			State = Bleed;
@@ -388,6 +404,7 @@ void loop()
 		case 0x13:	// VentCuffMsgTypee
 			LS1OFF();								// Connect LS1 to atmosphere
 			LS2ON();								// Connect cuff to LS1
+			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
 			pumpSpeed = 0xFF;						// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -406,6 +423,13 @@ void loop()
 	switch (State)
 	{
 		case Fill:
+			
+			// Execute the pump PID controller
+			dCP = CP;
+			pumpPID.Compute();
+			pumpSpeed = dPumpSpeed;
+			analogWrite(PUMP_PIN, pumpSpeed);
+
 			// If cuff pressure > target cuff pressure then stop pump and set valves for Hold state
 			if (CP >= targetCP)
 			{
@@ -415,6 +439,7 @@ void loop()
 				LS1ON();								// Connect LS1 to pump
 				LS2ON();								// Connect cuff to LS1
 
+				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -438,6 +463,7 @@ void loop()
 				LS1ON();								// Connect LS1 to pump
 				LS2ON();								// Connect cuff to LS1
 
+				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
 				pumpSpeed = 0xFF;						// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
 
@@ -460,30 +486,6 @@ void loop()
 	// DONE: Check that the sensor data is new before sending to host
 	if (newSensorData)
 	{
-		outPacket[0x00] = 0x18;					// SensorDataMsgType
-		outPacket[0x01] = lowByte(PPG1);		// low byte of PPG1 sensor measurement
-		outPacket[0x02] = highByte(PPG1);		// high byte of PPG1 sensor measurement
-		outPacket[0x03] = lowByte(CP);			// low byte of cuff pressure sensor measurement
-		outPacket[0x04] = highByte(CP);			// high byte of cuff pressure sensor measurement
-		outPacket[0x05] = CuffPID;				// Output setting from Cuff PID controller
-		outPacket[0x06] = lowByte(BPM);			// calculated pulse rate, beats per minute
-		outPacket[0x07] = highByte(BPM);
-		outPacket[0x08] = lowByte(IBI);			// time interval between beats
-		outPacket[0x09] = highByte(IBI);
-		outPacket[0x0A] = lowByte(PPG2);		// low byte of PPG2 sensor measurement
-		outPacket[0x0B] = highByte(PPG2);		// high byte of PPG2 sensor measurement
-		
-		// Break data timer (ms) into constituant bytes:
-		outPacket[0x0F] = sampleCounter / 16777216L;
-		outPacket[0x0E] = (sampleCounter - outPacket[0x0F] * 16777216L) / 65536L;
-		outPacket[0x0D] = (sampleCounter - outPacket[0x0E] * 65536L) / 256;
-		outPacket[0x0C] = sampleCounter - outPacket[0x0D] * 256;
-
-		for (i = 0x10; i < PACKET_SIZE - 1; ++i)
-		{
-			outPacket[i] = 0x00;
-		}
-
 		SendUSBPacket();
 		newSensorData = false;
 	}
@@ -494,7 +496,6 @@ void loop()
 	spUSB.update();							// Let PacketSerial do its thing
 
 	// TODO: Ensure this delay is not pacing the transmission of data to the host:
-
 	delay(10);								//  take a break
 
 }

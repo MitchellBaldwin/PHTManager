@@ -789,7 +789,7 @@
             // 
             // pumpPIDNumericUpDown
             // 
-            this.pumpPIDNumericUpDown.Location = new System.Drawing.Point(1049, 244);
+            this.pumpPIDNumericUpDown.Location = new System.Drawing.Point(1042, 245);
             this.pumpPIDNumericUpDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pumpPIDNumericUpDown.Maximum = new decimal(new int[] {
             255,
@@ -801,7 +801,7 @@
             this.pumpPIDNumericUpDown.TabIndex = 67;
             this.pumpPIDNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.pumpPIDNumericUpDown.Value = new decimal(new int[] {
-            127,
+            192,
             0,
             0,
             0});
