@@ -77,7 +77,7 @@ int fadeRate = 0;					// used to fade LED on with PWM on fadePin
 double dCP;
 double dPumpSpeed = 255.0;
 double dTargetCP = 0.0;
-PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.2, 0.1, REVERSE);
+PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.1, 0.2, REVERSE);
 
 //uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
 int pumpSpeed = 0xFF;				// PWM setting for cuff pump
@@ -430,20 +430,20 @@ void loop()
 			pumpSpeed = dPumpSpeed;
 			analogWrite(PUMP_PIN, pumpSpeed);
 
-			// If cuff pressure > target cuff pressure then stop pump and set valves for Hold state
-			if (CP >= targetCP)
-			{
-				// Transition to Hold state:
-				State = Hold;
-				// Switch valves and set pump for Hold state:
-				LS1ON();								// Connect LS1 to pump
-				LS2ON();								// Connect cuff to LS1
+			//// If cuff pressure > target cuff pressure then stop pump and set valves for Hold state
+			//if (CP >= targetCP)
+			//{
+			//	// Transition to Hold state:
+			//	State = Hold;
+			//	// Switch valves and set pump for Hold state:
+			//	LS1ON();								// Connect LS1 to pump
+			//	LS2ON();								// Connect cuff to LS1
 
-				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-				pumpSpeed = 0xFF;						// Turn pump off
-				analogWrite(PUMP_PIN, pumpSpeed);
+			//	pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+			//	pumpSpeed = 0xFF;						// Turn pump off
+			//	analogWrite(PUMP_PIN, pumpSpeed);
 
-			}
+			//}
 
 			break;
 

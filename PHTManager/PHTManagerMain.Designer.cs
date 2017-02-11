@@ -37,6 +37,7 @@
             this.lastSystolicPressureLabel = new System.Windows.Forms.Label();
             this.lastSystolicPressureDisplayLabel = new System.Windows.Forms.Label();
             this.pulseRatePanel = new System.Windows.Forms.Panel();
+            this.calculatePulseRateCheckBox = new System.Windows.Forms.CheckBox();
             this.pulseRateLebel = new System.Windows.Forms.Label();
             this.pulseRateDisplayLabel = new System.Windows.Forms.Label();
             this.targeyPressurePanel = new System.Windows.Forms.Panel();
@@ -91,7 +92,6 @@
             this.pumpPIDNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.connectButton = new System.Windows.Forms.Button();
             this.saveDataButton = new System.Windows.Forms.Button();
-            this.calculatePulseRateCheckBox = new System.Windows.Forms.CheckBox();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
@@ -191,6 +191,16 @@
             this.pulseRatePanel.Name = "pulseRatePanel";
             this.pulseRatePanel.Size = new System.Drawing.Size(301, 123);
             this.pulseRatePanel.TabIndex = 5;
+            // 
+            // calculatePulseRateCheckBox
+            // 
+            this.calculatePulseRateCheckBox.AutoSize = true;
+            this.calculatePulseRateCheckBox.Location = new System.Drawing.Point(16, 11);
+            this.calculatePulseRateCheckBox.Name = "calculatePulseRateCheckBox";
+            this.calculatePulseRateCheckBox.Size = new System.Drawing.Size(18, 17);
+            this.calculatePulseRateCheckBox.TabIndex = 2;
+            this.calculatePulseRateCheckBox.UseVisualStyleBackColor = true;
+            this.calculatePulseRateCheckBox.CheckedChanged += new System.EventHandler(this.calculatePulseRateCheckBox_CheckedChanged);
             // 
             // pulseRateLebel
             // 
@@ -554,6 +564,7 @@
             // findSystolicPressureButton
             // 
             this.findSystolicPressureButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.findSystolicPressureButton.Enabled = false;
             this.findSystolicPressureButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.findSystolicPressureButton.Image = global::PHTManager.Properties.Resources.forward;
             this.findSystolicPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -827,16 +838,6 @@
             this.saveDataButton.Text = "Start Save Segment";
             this.saveDataButton.UseVisualStyleBackColor = true;
             this.saveDataButton.Click += new System.EventHandler(this.saveDataButton_Click);
-            // 
-            // calculatePulseRateCheckBox
-            // 
-            this.calculatePulseRateCheckBox.AutoSize = true;
-            this.calculatePulseRateCheckBox.Location = new System.Drawing.Point(16, 11);
-            this.calculatePulseRateCheckBox.Name = "calculatePulseRateCheckBox";
-            this.calculatePulseRateCheckBox.Size = new System.Drawing.Size(18, 17);
-            this.calculatePulseRateCheckBox.TabIndex = 2;
-            this.calculatePulseRateCheckBox.UseVisualStyleBackColor = true;
-            this.calculatePulseRateCheckBox.CheckedChanged += new System.EventHandler(this.calculatePulseRateCheckBox_CheckedChanged);
             // 
             // PHTManagerMain
             // 
