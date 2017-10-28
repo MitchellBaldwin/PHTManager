@@ -77,13 +77,14 @@ volatile unsigned long sampleCounter = 0;	// used to determine pulse timing
 //  Variables
 int fadeRate = 0;					// used to fade LED on with PWM on fadePin
 
+// Set up pump PID controller:
 double dCP;
 double dPumpSpeed = 255.0;
 double dTargetCP = 0.0;
-PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.1, 0.2, REVERSE);
+PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.1, 0.2, DIRECT);
 
 //uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
-int pumpSpeed = 0xFF;				// PWM setting for cuff pump
+int pumpSpeed = 0;					// PWM setting for cuff pump
 int targetCP = 0;					// Target cuff pressure - raw ACD equivalent value
 
 int loopHalfPeriod = 250;			// Main loop period / 2 (ms) - can be set by Host
@@ -111,14 +112,15 @@ void setup()
 	pinMode(LEDPIN, OUTPUT);
 
 	// Initialize output pins:
-	pumpSpeed = 0xFF;						// Turn pump off
+	pumpSpeed = 0;							// Turn pump off
 	analogWrite(PUMP_PIN, pumpSpeed);
 	dCP = analogRead(CP_PIN);
 	dTargetCP = 0.0;
 	pumpPID.SetMode(MANUAL);
 
-	digitalWrite(S1_PIN, 1);				// Turn S1 off
-	digitalWrite(S2_PIN, 1);				// Turn S2 off
+	digitalWrite(S1_PIN, 0);				// Turn S1 off
+	digitalWrite(S2_PIN, 0);				// Turn S2 off
+	digitalWrite(S3_PIN, 0);				// Turn S3 off
 
 	for (i = 1; i < COMM_BUFFER_SIZE; ++i)
 	{
@@ -343,13 +345,21 @@ void loop()
 			LS2OFF();
 			break;
 
-		case 0x08:	// SetLoopPeriodMsgType
+		case 0x08:		// Latch LS3 ON
+			LS3ON();
+			break;
+
+		case 0x09:		// Latch LS3 OFF
+			LS3OFF();
+			break;
+
+		case 0x0E:	// SetLoopPeriodMsgType
 			// Change main loop period to value (in ms) commanded by Host
 			loopPeriod = inPacket[0x02] * 0xFF + inPacket[0x01];
 			loopHalfPeriod = loopPeriod / 2;
 			break;
 
-		case 0x09:	// ToggleHRCalculation
+		case 0x0F:	// ToggleHRCalculation
 			if (calculateHR)
 			{
 				calculateHR = false;
@@ -363,8 +373,9 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			LS1ON();								// Connect LS1 to pump
-			LS2ON();								// Connect cuff to LS1
+			LS1ON();								// Connect cuff to manifold
+			LS2OFF();								// Close bleed valve
+			LS3OFF();								// Close vent valve
 			//pumpSpeed = inPacket[0x01];			// Read commanded initial pump speed
 			//analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
 
@@ -379,10 +390,11 @@ void loop()
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			LS1ON();								// Connect LS1 to pump
-			LS2ON();								// Connect cuff to LS1
+			LS1ON();								// Connect cuff to manifold
+			LS2OFF();								// Close bleed valve
+			LS3OFF();								// Close vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0xFF;						// Turn pump off
+			pumpSpeed = 0;							// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Set state:
@@ -390,10 +402,11 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			LS1ON();								// Connect LS1 to pump
-			LS2OFF();								// Connect cuff to bleed port
+			LS1ON();								// Connect cuff to manifold
+			LS2ON();								// Open bleed valve
+			LS3OFF();								// Close vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0xFF;						// Turn pump off
+			pumpSpeed = 0;							// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Read and set target cuff pressure:
@@ -405,10 +418,11 @@ void loop()
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			LS1OFF();								// Connect LS1 to atmosphere
-			LS2ON();								// Connect cuff to LS1
+			LS1ON();								// Connect cuff to manifold
+			LS2OFF();								// Close bleed valve
+			LS3ON();								// Open vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0xFF;						// Turn pump off
+			pumpSpeed = 0;							// Turn pump off
 			analogWrite(PUMP_PIN, pumpSpeed);
 
 			// Set state:
@@ -443,7 +457,7 @@ void loop()
 			//	LS2ON();								// Connect cuff to LS1
 
 			//	pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			//	pumpSpeed = 0xFF;						// Turn pump off
+			//	pumpSpeed = 0;							// Turn pump off
 			//	analogWrite(PUMP_PIN, pumpSpeed);
 
 			//}
@@ -463,11 +477,12 @@ void loop()
 				// Transition to Hold state:
 				State = Hold;
 				// Switch valves and set pump for Hold state:
-				LS1ON();								// Connect LS1 to pump
-				LS2ON();								// Connect cuff to LS1
+				LS1ON();								// Connect cuff to manifold
+				LS2OFF();								// Close bleed valve
+				LS3OFF();								// Close vent valve
 
 				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-				pumpSpeed = 0xFF;						// Turn pump off
+				pumpSpeed = 0;							// Turn pump off
 				analogWrite(PUMP_PIN, pumpSpeed);
 
 			}

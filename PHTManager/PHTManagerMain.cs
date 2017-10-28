@@ -22,14 +22,16 @@ namespace PHTManager
         public const Byte SetModeMsgType = 0x01;            // The packet is a Set Mode command (Host to PHTMD)
         public const Byte StartDataSave = 0x02;             // Start the serial data stream from the PHTM device (Host to PHTMD)
         public const Byte EndDataSave = 0x03;               // Stop the serial data stream from the PHTM device (Host to PHTMD)
-        public const Byte LS1ONMsgType = 0x04;              // Connect LS2 to pump
-        public const Byte LS1OFFMsgType = 0x05;             // Connect LS2 to atmosphere
-        public const Byte LS2ONMsgType = 0x06;              // Connect cuff to LS1
-        public const Byte LS2OFFMsgType = 0x07;             // Connect cuff to bleed port
+        public const Byte LS1ONMsgType = 0x04;              // Connect cuff to manifold
+        public const Byte LS1OFFMsgType = 0x05;             // Isolate cuff
+        public const Byte LS2ONMsgType = 0x06;              // Open bleed valve
+        public const Byte LS2OFFMsgType = 0x07;             // Close bleed valve
+        public const Byte LS3ONMsgType = 0x08;              // Open vent valve
+        public const Byte LS3OFFMsgType = 0x09;             // Close vent valve
 
-        public const Byte SetLoopPeriodMsgType = 0x08;      // Sets the main loop delay time (Host to PHTMD)
+        public const Byte SetLoopPeriodMsgType = 0x0E;      // Sets the main loop delay time (Host to PHTMD)
 
-        public const Byte ToggleHRCalculation = 0x09;       // Toggle calculation & display of heart rate (BPM) and IBI
+        public const Byte ToggleHRCalculation = 0x0F;       // Toggle calculation & display of heart rate (BPM) and IBI
         
         public const Byte FillCuffMsgType = 0x10;           // Set valves and pump to fill cuff to target pressure; command packet includes (initial) 
                                                             // pump speed setting (Host to PHTMD)
