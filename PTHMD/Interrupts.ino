@@ -1,6 +1,7 @@
 // PERMISSIVE HYPERTENSION MONITORING DEVICE (PHTMD) Embedded Controller Interrupt Service Routines
 // Mitch Baldwin	RMBIMedical	for U of M CIRCC	24 Apr 2015
 // v 1.0
+// v 1.1	28 Oct 2017	Updated to support 3 solenoid control and finger tip PPG sensor
 
 // Variables used in the ISR to parse the PPG signal
 volatile int rate[10];						// array to hold last ten IBI values
@@ -37,11 +38,12 @@ void timer1InterruptSetup()
 
 void timer2InterruptSetup(){
 	// Initializes Timer2 to interrupt every 2 mS
-	TCCR2A = 0x02;     // DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
-	TCCR2B = 0x06;     // DON'T FORCE COMPARE, 256 PRESCALER 
-	OCR2A = 0X7C;      // SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
-	TIMSK2 = 0x02;     // ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
-	sei();             // MAKE SURE GLOBAL INTERRUPTS ARE ENABLED      
+	cli();				// disable global interrupts (RMBI: Added v1.1)
+	TCCR2A = 0x02;		// DISABLE PWM ON DIGITAL PINS 3 AND 11, AND GO INTO CTC MODE
+	TCCR2B = 0x06;		// DON'T FORCE COMPARE, 256 PRESCALER 
+	OCR2A = 0X7C;		// SET THE TOP OF THE COUNT TO 124 FOR 500Hz SAMPLE RATE
+	TIMSK2 = 0x02;		// ENABLE INTERRUPT ON MATCH BETWEEN TIMER2 AND OCR2A
+	sei();				// MAKE SURE GLOBAL INTERRUPTS ARE ENABLED      
 }
 
 

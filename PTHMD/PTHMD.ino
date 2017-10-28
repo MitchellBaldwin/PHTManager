@@ -1,6 +1,8 @@
 // PERMISSIVE HYPERTENSION MONITORING DEVICE (PHTMD) Embedded Controller Main
 // Mitch Baldwin	RMBIMedical	for U of M CIRCC	24 Apr 2015
 // v 1.0
+// v 1.1	28 Oct 2017	Updated to support 3 solenoid control and finger tip PPG sensor
+//
 // Base timer code from: Arduino timer CTC interrupt example (www.engblaze.com)
 
 // avr-libc library includes
@@ -25,8 +27,9 @@
 
 #define FADE_PIN 5					// PWM pin to do fancy classy fading blink at each beat
 #define PUMP_PIN 6					// PWM control of the pump
-#define S1_PIN 2					// Solenoid valve 1 control pin
-#define S2_PIN 3					// Solenoid valve 2 control pin
+#define S1_PIN 2					// Solenoid valve 1 control pin - Cuff	(RMBI: Added v1.1)
+#define S2_PIN 3					// Solenoid valve 2 control pin - Bleed	(RMBI: Added v1.1)
+#define S3_PIN 4					// Solenoid valve 3 control pin - Vent	(RMBI: Added v1.1)
 
 #define LEDPIN 13					// pin to blink led at each beat
 
@@ -145,7 +148,7 @@ void OnUSBPacket(const uint8_t* buffer, size_t size)
 	}
 	if (checksum != buffer[PACKET_SIZE - 1])
 	{
-		// Indicate checksum error to host and and other appropriate clients
+		// Indicate checksum error to host and other appropriate clients
 		// e.g., text message back to host, LED indicating error status, etc.
 		//char s[TEXT_MESSAGE_MAX_SIZE];
 		//snprintf(s, TEXT_MESSAGE_MAX_SIZE, "MRS-MCC checksum %#x != %#x", checksum, buffer[PACKET_SIZE - 1]);
@@ -487,7 +490,7 @@ void loop()
 	if (newSensorData)
 	{
 		SendUSBPacket();
-		newSensorData = false;
+		newSensorData = false;	// Reset flag
 	}
 
 	// Uncomment the following line to enable the fader pin
