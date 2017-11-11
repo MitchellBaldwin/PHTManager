@@ -36,10 +36,12 @@ namespace PHTManager
             set { pPG2 = value; }
         }
 
-        public ushort CPRaw = 512;
         public ushort CPZero = 29;
+        public ushort CPRaw = 29;
         //public ushort CPZero = 0;
-        public double CPGain = 28.47;
+        public double CPGain = 22.7692;     // mmHg/count from measurement on 11 Nov 2017
+        //public double CPGain = 20.3467;     // mmHg/count from MPVX7025DP with 2x scaling circuit
+        //public double CPGain = 28.47;
         //public double CPGain = 26.85;
         //public double CPGain = 20.0;
 

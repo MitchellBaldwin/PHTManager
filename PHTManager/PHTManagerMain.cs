@@ -311,7 +311,9 @@ namespace PHTManager
 
             cuffPressureDisplayLabel.Text = curDataPoint.CP.ToString();
             //cuffPressureDisplayLabel.Text = curDataPoint.CPRaw.ToString();
+            targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
             //targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
+            cuffPressureADCDisplayLabel.Text = curDataPoint.CPRaw.ToString();
 
             pulseRateDisplayLabel.Text = curDataPoint.BPM.ToString();
             pulsePeriodDisplayLabel.Text = curDataPoint.IBI.ToString();
@@ -703,6 +705,18 @@ namespace PHTManager
         private void pulseLS2OFFButton_Click(object sender, EventArgs e)
         {
             BuildCommMessage(LS2OFFMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS3ONButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS3ONMsgType, dummy);
+            SendCommandMessage();
+        }
+
+        private void pulseLS3OFFButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(LS3OFFMsgType, dummy);
             SendCommandMessage();
         }
 

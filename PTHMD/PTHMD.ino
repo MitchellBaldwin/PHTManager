@@ -94,7 +94,7 @@ bool newCommandMsgReceived = false;	// Flag indicating a new commang message was
 uint8_t commandMsgReceived = 0x00;	// Initialize the type of command received
 
 boolean dataSaveActive = false;		// Flag indicating whether host is accumulating a data segment to save
-boolean calculateHR = false;		// Flag indicating whether ISR should calculate heart rate and IBI
+boolean calculateHR = true;		// Flag indicating whether ISR should calculate heart rate and IBI
 									// (clear to speed ISR execution)
 
 // Regards Serial OutPut  -- Set This Up to your needs
@@ -108,6 +108,7 @@ void setup()
 	pinMode(PUMP_PIN, OUTPUT);
 	pinMode(S1_PIN, OUTPUT);
 	pinMode(S2_PIN, OUTPUT);
+	pinMode(S3_PIN, OUTPUT);
 
 	pinMode(LEDPIN, OUTPUT);
 
@@ -116,6 +117,7 @@ void setup()
 	analogWrite(PUMP_PIN, pumpSpeed);
 	dCP = analogRead(CP_PIN);
 	dTargetCP = 0.0;
+	pumpPID.SetOutputLimits(0.0, 255.0);
 	pumpPID.SetMode(MANUAL);
 
 	digitalWrite(S1_PIN, 0);				// Turn S1 off
@@ -373,7 +375,7 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			LS1ON();								// Connect cuff to manifold
+			LS1ON();								// Connect pump to manifold
 			LS2OFF();								// Close bleed valve
 			LS3OFF();								// Close vent valve
 			//pumpSpeed = inPacket[0x01];			// Read commanded initial pump speed
@@ -390,7 +392,7 @@ void loop()
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			LS1ON();								// Connect cuff to manifold
+			LS1OFF();								// Disconnect pump from manifold
 			LS2OFF();								// Close bleed valve
 			LS3OFF();								// Close vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
@@ -402,7 +404,7 @@ void loop()
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			LS1ON();								// Connect cuff to manifold
+			LS1OFF();								// Disconnect pump from manifold
 			LS2ON();								// Open bleed valve
 			LS3OFF();								// Close vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
@@ -418,7 +420,7 @@ void loop()
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			LS1ON();								// Connect cuff to manifold
+			LS1OFF();								// Disconnect pump from manifold
 			LS2OFF();								// Close bleed valve
 			LS3ON();								// Open vent valve
 			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller

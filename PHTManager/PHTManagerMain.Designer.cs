@@ -83,6 +83,8 @@
             this.COMPortToolStripComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.PHTMSaveDataFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.TestControlPanel = new System.Windows.Forms.Panel();
+            this.pulseLS3OFFButton = new System.Windows.Forms.Button();
+            this.pulseLS3ONButton = new System.Windows.Forms.Button();
             this.pulseLS1ONButton = new System.Windows.Forms.Button();
             this.pulseLS2OFFButton = new System.Windows.Forms.Button();
             this.pulseLS1OFFButton = new System.Windows.Forms.Button();
@@ -92,6 +94,9 @@
             this.pumpPIDNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.connectButton = new System.Windows.Forms.Button();
             this.saveDataButton = new System.Windows.Forms.Button();
+            this.cuffPressureADCUnitsLabel = new System.Windows.Forms.Label();
+            this.cuffPressureADCLabel = new System.Windows.Forms.Label();
+            this.cuffPressureADCDisplayLabel = new System.Windows.Forms.Label();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
@@ -107,10 +112,10 @@
             this.cuffPressureDisplayPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.cuffPressureDisplayPanel.Controls.Add(this.currentCuffPressureLabel);
             this.cuffPressureDisplayPanel.Controls.Add(this.cuffPressureDisplayLabel);
-            this.cuffPressureDisplayPanel.Location = new System.Drawing.Point(465, 15);
-            this.cuffPressureDisplayPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.cuffPressureDisplayPanel.Location = new System.Drawing.Point(698, 23);
+            this.cuffPressureDisplayPanel.Margin = new System.Windows.Forms.Padding(6);
             this.cuffPressureDisplayPanel.Name = "cuffPressureDisplayPanel";
-            this.cuffPressureDisplayPanel.Size = new System.Drawing.Size(301, 123);
+            this.cuffPressureDisplayPanel.Size = new System.Drawing.Size(452, 192);
             this.cuffPressureDisplayPanel.TabIndex = 0;
             // 
             // currentCuffPressureLabel
@@ -119,9 +124,9 @@
             this.currentCuffPressureLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.currentCuffPressureLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.currentCuffPressureLabel.Location = new System.Drawing.Point(0, 0);
-            this.currentCuffPressureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.currentCuffPressureLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.currentCuffPressureLabel.Name = "currentCuffPressureLabel";
-            this.currentCuffPressureLabel.Size = new System.Drawing.Size(301, 39);
+            this.currentCuffPressureLabel.Size = new System.Drawing.Size(452, 61);
             this.currentCuffPressureLabel.TabIndex = 1;
             this.currentCuffPressureLabel.Text = "Current Cuff Pressure (mmHg)";
             this.currentCuffPressureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -133,10 +138,10 @@
             this.cuffPressureDisplayLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.cuffPressureDisplayLabel.Font = new System.Drawing.Font("Courier New", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cuffPressureDisplayLabel.ForeColor = System.Drawing.Color.Lime;
-            this.cuffPressureDisplayLabel.Location = new System.Drawing.Point(0, 39);
-            this.cuffPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffPressureDisplayLabel.Location = new System.Drawing.Point(0, 61);
+            this.cuffPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffPressureDisplayLabel.Name = "cuffPressureDisplayLabel";
-            this.cuffPressureDisplayLabel.Size = new System.Drawing.Size(301, 84);
+            this.cuffPressureDisplayLabel.Size = new System.Drawing.Size(452, 131);
             this.cuffPressureDisplayLabel.TabIndex = 0;
             this.cuffPressureDisplayLabel.Text = "0";
             this.cuffPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -146,10 +151,10 @@
             this.systolicPressurePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.systolicPressurePanel.Controls.Add(this.lastSystolicPressureLabel);
             this.systolicPressurePanel.Controls.Add(this.lastSystolicPressureDisplayLabel);
-            this.systolicPressurePanel.Location = new System.Drawing.Point(465, 145);
-            this.systolicPressurePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.systolicPressurePanel.Location = new System.Drawing.Point(698, 227);
+            this.systolicPressurePanel.Margin = new System.Windows.Forms.Padding(6);
             this.systolicPressurePanel.Name = "systolicPressurePanel";
-            this.systolicPressurePanel.Size = new System.Drawing.Size(301, 123);
+            this.systolicPressurePanel.Size = new System.Drawing.Size(452, 192);
             this.systolicPressurePanel.TabIndex = 2;
             // 
             // lastSystolicPressureLabel
@@ -158,9 +163,9 @@
             this.lastSystolicPressureLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lastSystolicPressureLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lastSystolicPressureLabel.Location = new System.Drawing.Point(0, 0);
-            this.lastSystolicPressureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lastSystolicPressureLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lastSystolicPressureLabel.Name = "lastSystolicPressureLabel";
-            this.lastSystolicPressureLabel.Size = new System.Drawing.Size(301, 39);
+            this.lastSystolicPressureLabel.Size = new System.Drawing.Size(452, 61);
             this.lastSystolicPressureLabel.TabIndex = 1;
             this.lastSystolicPressureLabel.Text = "Last Systolic Pressure (mmHg)";
             this.lastSystolicPressureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -172,10 +177,10 @@
             this.lastSystolicPressureDisplayLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lastSystolicPressureDisplayLabel.Font = new System.Drawing.Font("Courier New", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lastSystolicPressureDisplayLabel.ForeColor = System.Drawing.Color.Aqua;
-            this.lastSystolicPressureDisplayLabel.Location = new System.Drawing.Point(0, 39);
-            this.lastSystolicPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lastSystolicPressureDisplayLabel.Location = new System.Drawing.Point(0, 61);
+            this.lastSystolicPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.lastSystolicPressureDisplayLabel.Name = "lastSystolicPressureDisplayLabel";
-            this.lastSystolicPressureDisplayLabel.Size = new System.Drawing.Size(301, 84);
+            this.lastSystolicPressureDisplayLabel.Size = new System.Drawing.Size(452, 131);
             this.lastSystolicPressureDisplayLabel.TabIndex = 0;
             this.lastSystolicPressureDisplayLabel.Text = "0";
             this.lastSystolicPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -186,18 +191,19 @@
             this.pulseRatePanel.Controls.Add(this.calculatePulseRateCheckBox);
             this.pulseRatePanel.Controls.Add(this.pulseRateLebel);
             this.pulseRatePanel.Controls.Add(this.pulseRateDisplayLabel);
-            this.pulseRatePanel.Location = new System.Drawing.Point(465, 276);
-            this.pulseRatePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.pulseRatePanel.Location = new System.Drawing.Point(698, 431);
+            this.pulseRatePanel.Margin = new System.Windows.Forms.Padding(6);
             this.pulseRatePanel.Name = "pulseRatePanel";
-            this.pulseRatePanel.Size = new System.Drawing.Size(301, 123);
+            this.pulseRatePanel.Size = new System.Drawing.Size(452, 192);
             this.pulseRatePanel.TabIndex = 5;
             // 
             // calculatePulseRateCheckBox
             // 
             this.calculatePulseRateCheckBox.AutoSize = true;
-            this.calculatePulseRateCheckBox.Location = new System.Drawing.Point(16, 11);
+            this.calculatePulseRateCheckBox.Location = new System.Drawing.Point(24, 17);
+            this.calculatePulseRateCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.calculatePulseRateCheckBox.Name = "calculatePulseRateCheckBox";
-            this.calculatePulseRateCheckBox.Size = new System.Drawing.Size(18, 17);
+            this.calculatePulseRateCheckBox.Size = new System.Drawing.Size(28, 27);
             this.calculatePulseRateCheckBox.TabIndex = 2;
             this.calculatePulseRateCheckBox.UseVisualStyleBackColor = true;
             this.calculatePulseRateCheckBox.CheckedChanged += new System.EventHandler(this.calculatePulseRateCheckBox_CheckedChanged);
@@ -208,9 +214,9 @@
             this.pulseRateLebel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pulseRateLebel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseRateLebel.Location = new System.Drawing.Point(0, 0);
-            this.pulseRateLebel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.pulseRateLebel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.pulseRateLebel.Name = "pulseRateLebel";
-            this.pulseRateLebel.Size = new System.Drawing.Size(301, 39);
+            this.pulseRateLebel.Size = new System.Drawing.Size(452, 61);
             this.pulseRateLebel.TabIndex = 1;
             this.pulseRateLebel.Text = "Pulse Rate (BPM)";
             this.pulseRateLebel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -222,10 +228,10 @@
             this.pulseRateDisplayLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pulseRateDisplayLabel.Font = new System.Drawing.Font("Courier New", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.pulseRateDisplayLabel.ForeColor = System.Drawing.Color.Red;
-            this.pulseRateDisplayLabel.Location = new System.Drawing.Point(0, 39);
-            this.pulseRateDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.pulseRateDisplayLabel.Location = new System.Drawing.Point(0, 61);
+            this.pulseRateDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.pulseRateDisplayLabel.Name = "pulseRateDisplayLabel";
-            this.pulseRateDisplayLabel.Size = new System.Drawing.Size(301, 84);
+            this.pulseRateDisplayLabel.Size = new System.Drawing.Size(452, 131);
             this.pulseRateDisplayLabel.TabIndex = 0;
             this.pulseRateDisplayLabel.Text = "NP";
             this.pulseRateDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -237,19 +243,19 @@
             this.targeyPressurePanel.Controls.Add(this.targetPressureIncreaseButton);
             this.targeyPressurePanel.Controls.Add(this.targetPressureLabel);
             this.targeyPressurePanel.Controls.Add(this.targetPressureDisplayLabel);
-            this.targeyPressurePanel.Location = new System.Drawing.Point(801, 15);
-            this.targeyPressurePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.targeyPressurePanel.Location = new System.Drawing.Point(1202, 23);
+            this.targeyPressurePanel.Margin = new System.Windows.Forms.Padding(6);
             this.targeyPressurePanel.Name = "targeyPressurePanel";
-            this.targeyPressurePanel.Size = new System.Drawing.Size(301, 123);
+            this.targeyPressurePanel.Size = new System.Drawing.Size(452, 192);
             this.targeyPressurePanel.TabIndex = 9;
             // 
             // targetPressureDecreaseButton
             // 
             this.targetPressureDecreaseButton.Image = global::PHTManager.Properties.Resources.down;
-            this.targetPressureDecreaseButton.Location = new System.Drawing.Point(0, 80);
-            this.targetPressureDecreaseButton.Margin = new System.Windows.Forms.Padding(4);
+            this.targetPressureDecreaseButton.Location = new System.Drawing.Point(0, 125);
+            this.targetPressureDecreaseButton.Margin = new System.Windows.Forms.Padding(6);
             this.targetPressureDecreaseButton.Name = "targetPressureDecreaseButton";
-            this.targetPressureDecreaseButton.Size = new System.Drawing.Size(56, 43);
+            this.targetPressureDecreaseButton.Size = new System.Drawing.Size(84, 67);
             this.targetPressureDecreaseButton.TabIndex = 3;
             this.targetPressureDecreaseButton.UseVisualStyleBackColor = true;
             this.targetPressureDecreaseButton.Click += new System.EventHandler(this.targetPressureDecreaseButton_Click);
@@ -257,10 +263,10 @@
             // targetPressureIncreaseButton
             // 
             this.targetPressureIncreaseButton.Image = global::PHTManager.Properties.Resources.up;
-            this.targetPressureIncreaseButton.Location = new System.Drawing.Point(0, 39);
-            this.targetPressureIncreaseButton.Margin = new System.Windows.Forms.Padding(4);
+            this.targetPressureIncreaseButton.Location = new System.Drawing.Point(0, 61);
+            this.targetPressureIncreaseButton.Margin = new System.Windows.Forms.Padding(6);
             this.targetPressureIncreaseButton.Name = "targetPressureIncreaseButton";
-            this.targetPressureIncreaseButton.Size = new System.Drawing.Size(56, 43);
+            this.targetPressureIncreaseButton.Size = new System.Drawing.Size(84, 67);
             this.targetPressureIncreaseButton.TabIndex = 2;
             this.targetPressureIncreaseButton.UseVisualStyleBackColor = true;
             this.targetPressureIncreaseButton.Click += new System.EventHandler(this.targetPressureIncreaseButton_Click);
@@ -271,9 +277,9 @@
             this.targetPressureLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.targetPressureLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.targetPressureLabel.Location = new System.Drawing.Point(0, 0);
-            this.targetPressureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.targetPressureLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.targetPressureLabel.Name = "targetPressureLabel";
-            this.targetPressureLabel.Size = new System.Drawing.Size(301, 39);
+            this.targetPressureLabel.Size = new System.Drawing.Size(452, 61);
             this.targetPressureLabel.TabIndex = 1;
             this.targetPressureLabel.Text = "Target Pressure (mmHg)";
             this.targetPressureLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -284,10 +290,10 @@
             this.targetPressureDisplayLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.targetPressureDisplayLabel.Font = new System.Drawing.Font("Courier New", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.targetPressureDisplayLabel.ForeColor = System.Drawing.Color.Lime;
-            this.targetPressureDisplayLabel.Location = new System.Drawing.Point(53, 39);
-            this.targetPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.targetPressureDisplayLabel.Location = new System.Drawing.Point(80, 61);
+            this.targetPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.targetPressureDisplayLabel.Name = "targetPressureDisplayLabel";
-            this.targetPressureDisplayLabel.Size = new System.Drawing.Size(248, 84);
+            this.targetPressureDisplayLabel.Size = new System.Drawing.Size(372, 131);
             this.targetPressureDisplayLabel.TabIndex = 0;
             this.targetPressureDisplayLabel.Text = "90";
             this.targetPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -307,19 +313,19 @@
             this.systemPanel.Controls.Add(this.phmspPortDisplayLabel);
             this.systemPanel.Controls.Add(this.phmspLabel);
             this.systemPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.systemPanel.Location = new System.Drawing.Point(0, 839);
-            this.systemPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.systemPanel.Location = new System.Drawing.Point(0, 1311);
+            this.systemPanel.Margin = new System.Windows.Forms.Padding(6);
             this.systemPanel.Name = "systemPanel";
-            this.systemPanel.Size = new System.Drawing.Size(1125, 98);
+            this.systemPanel.Size = new System.Drawing.Size(1688, 153);
             this.systemPanel.TabIndex = 10;
             // 
             // testModeCheckBox
             // 
             this.testModeCheckBox.AutoSize = true;
-            this.testModeCheckBox.Location = new System.Drawing.Point(815, 11);
-            this.testModeCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.testModeCheckBox.Location = new System.Drawing.Point(1222, 17);
+            this.testModeCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.testModeCheckBox.Name = "testModeCheckBox";
-            this.testModeCheckBox.Size = new System.Drawing.Size(97, 21);
+            this.testModeCheckBox.Size = new System.Drawing.Size(145, 29);
             this.testModeCheckBox.TabIndex = 46;
             this.testModeCheckBox.Text = "Test mode";
             this.testModeCheckBox.UseVisualStyleBackColor = true;
@@ -327,30 +333,30 @@
             // 
             // phmspStopBitsDisplayLabel
             // 
-            this.phmspStopBitsDisplayLabel.Location = new System.Drawing.Point(448, 10);
-            this.phmspStopBitsDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspStopBitsDisplayLabel.Location = new System.Drawing.Point(672, 16);
+            this.phmspStopBitsDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspStopBitsDisplayLabel.Name = "phmspStopBitsDisplayLabel";
-            this.phmspStopBitsDisplayLabel.Size = new System.Drawing.Size(49, 16);
+            this.phmspStopBitsDisplayLabel.Size = new System.Drawing.Size(74, 25);
             this.phmspStopBitsDisplayLabel.TabIndex = 45;
             this.phmspStopBitsDisplayLabel.Text = "One";
             this.phmspStopBitsDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // commErrorDisplayLabel
             // 
-            this.commErrorDisplayLabel.Location = new System.Drawing.Point(505, 11);
-            this.commErrorDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.commErrorDisplayLabel.Location = new System.Drawing.Point(758, 17);
+            this.commErrorDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.commErrorDisplayLabel.Name = "commErrorDisplayLabel";
-            this.commErrorDisplayLabel.Size = new System.Drawing.Size(205, 16);
+            this.commErrorDisplayLabel.Size = new System.Drawing.Size(308, 25);
             this.commErrorDisplayLabel.TabIndex = 44;
             this.commErrorDisplayLabel.Text = "Not connected";
             // 
             // showAllBufferUpdatesCheckBox
             // 
             this.showAllBufferUpdatesCheckBox.AutoSize = true;
-            this.showAllBufferUpdatesCheckBox.Location = new System.Drawing.Point(927, 10);
-            this.showAllBufferUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.showAllBufferUpdatesCheckBox.Location = new System.Drawing.Point(1390, 16);
+            this.showAllBufferUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.showAllBufferUpdatesCheckBox.Name = "showAllBufferUpdatesCheckBox";
-            this.showAllBufferUpdatesCheckBox.Size = new System.Drawing.Size(178, 21);
+            this.showAllBufferUpdatesCheckBox.Size = new System.Drawing.Size(269, 29);
             this.showAllBufferUpdatesCheckBox.TabIndex = 43;
             this.showAllBufferUpdatesCheckBox.Text = "Show all buffer updates";
             this.showAllBufferUpdatesCheckBox.UseVisualStyleBackColor = true;
@@ -360,10 +366,10 @@
             // 
             this.bytePositionLabel.AutoSize = true;
             this.bytePositionLabel.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bytePositionLabel.Location = new System.Drawing.Point(12, 31);
-            this.bytePositionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.bytePositionLabel.Location = new System.Drawing.Point(18, 48);
+            this.bytePositionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.bytePositionLabel.Name = "bytePositionLabel";
-            this.bytePositionLabel.Size = new System.Drawing.Size(1009, 20);
+            this.bytePositionLabel.Size = new System.Drawing.Size(1613, 29);
             this.bytePositionLabel.TabIndex = 42;
             this.bytePositionLabel.Text = "POS: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 1" +
     "9 1A 1B 1C 1D 1E 1F";
@@ -372,10 +378,10 @@
             // 
             this.inBufferDisplayLabel.AutoSize = true;
             this.inBufferDisplayLabel.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.inBufferDisplayLabel.Location = new System.Drawing.Point(12, 66);
-            this.inBufferDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.inBufferDisplayLabel.Location = new System.Drawing.Point(18, 103);
+            this.inBufferDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.inBufferDisplayLabel.Name = "inBufferDisplayLabel";
-            this.inBufferDisplayLabel.Size = new System.Drawing.Size(49, 20);
+            this.inBufferDisplayLabel.Size = new System.Drawing.Size(77, 30);
             this.inBufferDisplayLabel.TabIndex = 41;
             this.inBufferDisplayLabel.Text = "IN: ";
             // 
@@ -383,49 +389,49 @@
             // 
             this.outBufferDisplayLabel.AutoSize = true;
             this.outBufferDisplayLabel.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.outBufferDisplayLabel.Location = new System.Drawing.Point(12, 50);
-            this.outBufferDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.outBufferDisplayLabel.Location = new System.Drawing.Point(18, 78);
+            this.outBufferDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.outBufferDisplayLabel.Name = "outBufferDisplayLabel";
-            this.outBufferDisplayLabel.Size = new System.Drawing.Size(59, 20);
+            this.outBufferDisplayLabel.Size = new System.Drawing.Size(93, 29);
             this.outBufferDisplayLabel.TabIndex = 40;
             this.outBufferDisplayLabel.Text = "OUT: ";
             // 
             // phmspDataBitsDisplayLabel
             // 
-            this.phmspDataBitsDisplayLabel.Location = new System.Drawing.Point(345, 11);
-            this.phmspDataBitsDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspDataBitsDisplayLabel.Location = new System.Drawing.Point(518, 17);
+            this.phmspDataBitsDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspDataBitsDisplayLabel.Name = "phmspDataBitsDisplayLabel";
-            this.phmspDataBitsDisplayLabel.Size = new System.Drawing.Size(35, 16);
+            this.phmspDataBitsDisplayLabel.Size = new System.Drawing.Size(52, 25);
             this.phmspDataBitsDisplayLabel.TabIndex = 37;
             this.phmspDataBitsDisplayLabel.Text = "8";
             this.phmspDataBitsDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // phmspParityDisplayLabel
             // 
-            this.phmspParityDisplayLabel.Location = new System.Drawing.Point(388, 11);
-            this.phmspParityDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspParityDisplayLabel.Location = new System.Drawing.Point(582, 17);
+            this.phmspParityDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspParityDisplayLabel.Name = "phmspParityDisplayLabel";
-            this.phmspParityDisplayLabel.Size = new System.Drawing.Size(52, 16);
+            this.phmspParityDisplayLabel.Size = new System.Drawing.Size(78, 25);
             this.phmspParityDisplayLabel.TabIndex = 36;
             this.phmspParityDisplayLabel.Text = "None";
             this.phmspParityDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // phmspBaudRateDisplayLabel
             // 
-            this.phmspBaudRateDisplayLabel.Location = new System.Drawing.Point(273, 11);
-            this.phmspBaudRateDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspBaudRateDisplayLabel.Location = new System.Drawing.Point(410, 17);
+            this.phmspBaudRateDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspBaudRateDisplayLabel.Name = "phmspBaudRateDisplayLabel";
-            this.phmspBaudRateDisplayLabel.Size = new System.Drawing.Size(64, 16);
+            this.phmspBaudRateDisplayLabel.Size = new System.Drawing.Size(96, 25);
             this.phmspBaudRateDisplayLabel.TabIndex = 35;
             this.phmspBaudRateDisplayLabel.Text = "115200";
             this.phmspBaudRateDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // phmspPortDisplayLabel
             // 
-            this.phmspPortDisplayLabel.Location = new System.Drawing.Point(201, 11);
-            this.phmspPortDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspPortDisplayLabel.Location = new System.Drawing.Point(302, 17);
+            this.phmspPortDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspPortDisplayLabel.Name = "phmspPortDisplayLabel";
-            this.phmspPortDisplayLabel.Size = new System.Drawing.Size(64, 16);
+            this.phmspPortDisplayLabel.Size = new System.Drawing.Size(96, 25);
             this.phmspPortDisplayLabel.TabIndex = 34;
             this.phmspPortDisplayLabel.Text = "COM1";
             this.phmspPortDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -433,96 +439,96 @@
             // phmspLabel
             // 
             this.phmspLabel.AutoSize = true;
-            this.phmspLabel.Location = new System.Drawing.Point(12, 11);
-            this.phmspLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.phmspLabel.Location = new System.Drawing.Point(18, 17);
+            this.phmspLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.phmspLabel.Name = "phmspLabel";
-            this.phmspLabel.Size = new System.Drawing.Size(181, 17);
+            this.phmspLabel.Size = new System.Drawing.Size(278, 25);
             this.phmspLabel.TabIndex = 33;
             this.phmspLabel.Text = "PHM Main Controller Serial:";
             // 
             // ppgSensitivityDisplayLabel
             // 
             this.ppgSensitivityDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ppgSensitivityDisplayLabel.Location = new System.Drawing.Point(964, 364);
-            this.ppgSensitivityDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ppgSensitivityDisplayLabel.Location = new System.Drawing.Point(1446, 569);
+            this.ppgSensitivityDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.ppgSensitivityDisplayLabel.Name = "ppgSensitivityDisplayLabel";
-            this.ppgSensitivityDisplayLabel.Size = new System.Drawing.Size(49, 16);
+            this.ppgSensitivityDisplayLabel.Size = new System.Drawing.Size(74, 25);
             this.ppgSensitivityDisplayLabel.TabIndex = 38;
             this.ppgSensitivityDisplayLabel.Text = "50";
             this.ppgSensitivityDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ppgSensitivityLabel
             // 
-            this.ppgSensitivityLabel.Location = new System.Drawing.Point(799, 364);
-            this.ppgSensitivityLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ppgSensitivityLabel.Location = new System.Drawing.Point(1198, 569);
+            this.ppgSensitivityLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.ppgSensitivityLabel.Name = "ppgSensitivityLabel";
-            this.ppgSensitivityLabel.Size = new System.Drawing.Size(159, 16);
+            this.ppgSensitivityLabel.Size = new System.Drawing.Size(238, 25);
             this.ppgSensitivityLabel.TabIndex = 45;
             this.ppgSensitivityLabel.Text = "PPG Sensitivity:";
             // 
             // ppgSensitivityUnitsLabel
             // 
-            this.ppgSensitivityUnitsLabel.Location = new System.Drawing.Point(1023, 364);
-            this.ppgSensitivityUnitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ppgSensitivityUnitsLabel.Location = new System.Drawing.Point(1534, 569);
+            this.ppgSensitivityUnitsLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.ppgSensitivityUnitsLabel.Name = "ppgSensitivityUnitsLabel";
-            this.ppgSensitivityUnitsLabel.Size = new System.Drawing.Size(81, 16);
+            this.ppgSensitivityUnitsLabel.Size = new System.Drawing.Size(122, 25);
             this.ppgSensitivityUnitsLabel.TabIndex = 47;
             this.ppgSensitivityUnitsLabel.Text = "mV";
             // 
             // cuffInflationRateUnitsLabel
             // 
-            this.cuffInflationRateUnitsLabel.Location = new System.Drawing.Point(1021, 185);
-            this.cuffInflationRateUnitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffInflationRateUnitsLabel.Location = new System.Drawing.Point(355, 540);
+            this.cuffInflationRateUnitsLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffInflationRateUnitsLabel.Name = "cuffInflationRateUnitsLabel";
-            this.cuffInflationRateUnitsLabel.Size = new System.Drawing.Size(81, 16);
+            this.cuffInflationRateUnitsLabel.Size = new System.Drawing.Size(122, 25);
             this.cuffInflationRateUnitsLabel.TabIndex = 50;
             this.cuffInflationRateUnitsLabel.Text = "mmHg/s";
             // 
             // cuffInflationRateLabel
             // 
-            this.cuffInflationRateLabel.Location = new System.Drawing.Point(797, 185);
-            this.cuffInflationRateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffInflationRateLabel.Location = new System.Drawing.Point(19, 540);
+            this.cuffInflationRateLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffInflationRateLabel.Name = "cuffInflationRateLabel";
-            this.cuffInflationRateLabel.Size = new System.Drawing.Size(159, 16);
+            this.cuffInflationRateLabel.Size = new System.Drawing.Size(238, 25);
             this.cuffInflationRateLabel.TabIndex = 49;
             this.cuffInflationRateLabel.Text = "Cuff Inflation Rate:";
             // 
             // cuffInflationRateDisplayLabel
             // 
             this.cuffInflationRateDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cuffInflationRateDisplayLabel.Location = new System.Drawing.Point(964, 185);
-            this.cuffInflationRateDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffInflationRateDisplayLabel.Location = new System.Drawing.Point(269, 540);
+            this.cuffInflationRateDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffInflationRateDisplayLabel.Name = "cuffInflationRateDisplayLabel";
-            this.cuffInflationRateDisplayLabel.Size = new System.Drawing.Size(49, 16);
+            this.cuffInflationRateDisplayLabel.Size = new System.Drawing.Size(74, 25);
             this.cuffInflationRateDisplayLabel.TabIndex = 48;
             this.cuffInflationRateDisplayLabel.Text = "2.0";
             this.cuffInflationRateDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // cuffDeflationRateUnitsLabel
             // 
-            this.cuffDeflationRateUnitsLabel.Location = new System.Drawing.Point(1021, 201);
-            this.cuffDeflationRateUnitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffDeflationRateUnitsLabel.Location = new System.Drawing.Point(355, 565);
+            this.cuffDeflationRateUnitsLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffDeflationRateUnitsLabel.Name = "cuffDeflationRateUnitsLabel";
-            this.cuffDeflationRateUnitsLabel.Size = new System.Drawing.Size(81, 16);
+            this.cuffDeflationRateUnitsLabel.Size = new System.Drawing.Size(122, 25);
             this.cuffDeflationRateUnitsLabel.TabIndex = 53;
             this.cuffDeflationRateUnitsLabel.Text = "mmHg/s";
             // 
             // cuffDeflationRateLabel
             // 
-            this.cuffDeflationRateLabel.Location = new System.Drawing.Point(797, 201);
-            this.cuffDeflationRateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffDeflationRateLabel.Location = new System.Drawing.Point(19, 565);
+            this.cuffDeflationRateLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffDeflationRateLabel.Name = "cuffDeflationRateLabel";
-            this.cuffDeflationRateLabel.Size = new System.Drawing.Size(159, 16);
+            this.cuffDeflationRateLabel.Size = new System.Drawing.Size(238, 25);
             this.cuffDeflationRateLabel.TabIndex = 52;
             this.cuffDeflationRateLabel.Text = "Cuff Deflation Rate:";
             // 
             // cuffDeflationRateDisplayLabel
             // 
             this.cuffDeflationRateDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cuffDeflationRateDisplayLabel.Location = new System.Drawing.Point(964, 201);
-            this.cuffDeflationRateDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.cuffDeflationRateDisplayLabel.Location = new System.Drawing.Point(269, 565);
+            this.cuffDeflationRateDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.cuffDeflationRateDisplayLabel.Name = "cuffDeflationRateDisplayLabel";
-            this.cuffDeflationRateDisplayLabel.Size = new System.Drawing.Size(49, 16);
+            this.cuffDeflationRateDisplayLabel.Size = new System.Drawing.Size(74, 25);
             this.cuffDeflationRateDisplayLabel.TabIndex = 51;
             this.cuffDeflationRateDisplayLabel.Text = "-2.0";
             this.cuffDeflationRateDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -533,10 +539,10 @@
             this.reperfuseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.reperfuseButton.Image = global::PHTManager.Properties.Resources.rotate_3d;
             this.reperfuseButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.reperfuseButton.Location = new System.Drawing.Point(16, 231);
-            this.reperfuseButton.Margin = new System.Windows.Forms.Padding(4);
+            this.reperfuseButton.Location = new System.Drawing.Point(24, 361);
+            this.reperfuseButton.Margin = new System.Windows.Forms.Padding(6);
             this.reperfuseButton.Name = "reperfuseButton";
-            this.reperfuseButton.Size = new System.Drawing.Size(331, 52);
+            this.reperfuseButton.Size = new System.Drawing.Size(496, 81);
             this.reperfuseButton.TabIndex = 8;
             this.reperfuseButton.Text = "Reperfuse";
             this.reperfuseButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -550,10 +556,10 @@
             this.maintainCuffPressureButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.maintainCuffPressureButton.Image = global::PHTManager.Properties.Resources.disc;
             this.maintainCuffPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.maintainCuffPressureButton.Location = new System.Drawing.Point(16, 113);
-            this.maintainCuffPressureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.maintainCuffPressureButton.Location = new System.Drawing.Point(24, 177);
+            this.maintainCuffPressureButton.Margin = new System.Windows.Forms.Padding(6);
             this.maintainCuffPressureButton.Name = "maintainCuffPressureButton";
-            this.maintainCuffPressureButton.Size = new System.Drawing.Size(331, 52);
+            this.maintainCuffPressureButton.Size = new System.Drawing.Size(496, 81);
             this.maintainCuffPressureButton.TabIndex = 7;
             this.maintainCuffPressureButton.Text = "Maintain cuff pressure";
             this.maintainCuffPressureButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -568,10 +574,10 @@
             this.findSystolicPressureButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.findSystolicPressureButton.Image = global::PHTManager.Properties.Resources.forward;
             this.findSystolicPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.findSystolicPressureButton.Location = new System.Drawing.Point(16, 290);
-            this.findSystolicPressureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.findSystolicPressureButton.Location = new System.Drawing.Point(24, 453);
+            this.findSystolicPressureButton.Margin = new System.Windows.Forms.Padding(6);
             this.findSystolicPressureButton.Name = "findSystolicPressureButton";
-            this.findSystolicPressureButton.Size = new System.Drawing.Size(331, 52);
+            this.findSystolicPressureButton.Size = new System.Drawing.Size(496, 81);
             this.findSystolicPressureButton.TabIndex = 6;
             this.findSystolicPressureButton.Text = "Find systolic pressure";
             this.findSystolicPressureButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -584,10 +590,10 @@
             this.bleedCuffPressureButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bleedCuffPressureButton.Image = global::PHTManager.Properties.Resources.down;
             this.bleedCuffPressureButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bleedCuffPressureButton.Location = new System.Drawing.Point(16, 172);
-            this.bleedCuffPressureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.bleedCuffPressureButton.Location = new System.Drawing.Point(24, 269);
+            this.bleedCuffPressureButton.Margin = new System.Windows.Forms.Padding(6);
             this.bleedCuffPressureButton.Name = "bleedCuffPressureButton";
-            this.bleedCuffPressureButton.Size = new System.Drawing.Size(331, 52);
+            this.bleedCuffPressureButton.Size = new System.Drawing.Size(496, 81);
             this.bleedCuffPressureButton.TabIndex = 4;
             this.bleedCuffPressureButton.Text = "Bleed cuff pressure";
             this.bleedCuffPressureButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -601,10 +607,10 @@
             this.fillCuffButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fillCuffButton.Image = global::PHTManager.Properties.Resources.up;
             this.fillCuffButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.fillCuffButton.Location = new System.Drawing.Point(16, 54);
-            this.fillCuffButton.Margin = new System.Windows.Forms.Padding(4);
+            this.fillCuffButton.Location = new System.Drawing.Point(24, 84);
+            this.fillCuffButton.Margin = new System.Windows.Forms.Padding(6);
             this.fillCuffButton.Name = "fillCuffButton";
-            this.fillCuffButton.Size = new System.Drawing.Size(331, 52);
+            this.fillCuffButton.Size = new System.Drawing.Size(496, 81);
             this.fillCuffButton.TabIndex = 3;
             this.fillCuffButton.Text = "Fill cuff";
             this.fillCuffButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -628,8 +634,8 @@
             // phmDataZedGraph
             // 
             this.phmDataZedGraph.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.phmDataZedGraph.Location = new System.Drawing.Point(0, 407);
-            this.phmDataZedGraph.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.phmDataZedGraph.Location = new System.Drawing.Point(0, 636);
+            this.phmDataZedGraph.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
             this.phmDataZedGraph.Name = "phmDataZedGraph";
             this.phmDataZedGraph.ScrollGrace = 0D;
             this.phmDataZedGraph.ScrollMaxX = 0D;
@@ -638,16 +644,16 @@
             this.phmDataZedGraph.ScrollMinX = 0D;
             this.phmDataZedGraph.ScrollMinY = 0D;
             this.phmDataZedGraph.ScrollMinY2 = 0D;
-            this.phmDataZedGraph.Size = new System.Drawing.Size(1125, 432);
+            this.phmDataZedGraph.Size = new System.Drawing.Size(1688, 675);
             this.phmDataZedGraph.TabIndex = 54;
             // 
             // showPumpPIDOnGraphCheckBox
             // 
             this.showPumpPIDOnGraphCheckBox.AutoSize = true;
-            this.showPumpPIDOnGraphCheckBox.Location = new System.Drawing.Point(801, 246);
-            this.showPumpPIDOnGraphCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.showPumpPIDOnGraphCheckBox.Location = new System.Drawing.Point(1204, 288);
+            this.showPumpPIDOnGraphCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.showPumpPIDOnGraphCheckBox.Name = "showPumpPIDOnGraphCheckBox";
-            this.showPumpPIDOnGraphCheckBox.Size = new System.Drawing.Size(191, 21);
+            this.showPumpPIDOnGraphCheckBox.Size = new System.Drawing.Size(289, 29);
             this.showPumpPIDOnGraphCheckBox.TabIndex = 55;
             this.showPumpPIDOnGraphCheckBox.Text = "Show Pump PID on graph";
             this.showPumpPIDOnGraphCheckBox.UseVisualStyleBackColor = true;
@@ -655,29 +661,29 @@
             // 
             // pulsePeriodUnitsLabel
             // 
-            this.pulsePeriodUnitsLabel.Location = new System.Drawing.Point(1023, 380);
-            this.pulsePeriodUnitsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.pulsePeriodUnitsLabel.Location = new System.Drawing.Point(1534, 594);
+            this.pulsePeriodUnitsLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.pulsePeriodUnitsLabel.Name = "pulsePeriodUnitsLabel";
-            this.pulsePeriodUnitsLabel.Size = new System.Drawing.Size(81, 16);
+            this.pulsePeriodUnitsLabel.Size = new System.Drawing.Size(122, 25);
             this.pulsePeriodUnitsLabel.TabIndex = 58;
             this.pulsePeriodUnitsLabel.Text = "ms";
             // 
             // pulsePeriodLabel
             // 
-            this.pulsePeriodLabel.Location = new System.Drawing.Point(799, 380);
-            this.pulsePeriodLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.pulsePeriodLabel.Location = new System.Drawing.Point(1198, 594);
+            this.pulsePeriodLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.pulsePeriodLabel.Name = "pulsePeriodLabel";
-            this.pulsePeriodLabel.Size = new System.Drawing.Size(159, 16);
+            this.pulsePeriodLabel.Size = new System.Drawing.Size(238, 25);
             this.pulsePeriodLabel.TabIndex = 57;
             this.pulsePeriodLabel.Text = "Pulse period:";
             // 
             // pulsePeriodDisplayLabel
             // 
             this.pulsePeriodDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulsePeriodDisplayLabel.Location = new System.Drawing.Point(965, 380);
-            this.pulsePeriodDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.pulsePeriodDisplayLabel.Location = new System.Drawing.Point(1448, 594);
+            this.pulsePeriodDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.pulsePeriodDisplayLabel.Name = "pulsePeriodDisplayLabel";
-            this.pulsePeriodDisplayLabel.Size = new System.Drawing.Size(49, 16);
+            this.pulsePeriodDisplayLabel.Size = new System.Drawing.Size(74, 25);
             this.pulsePeriodDisplayLabel.TabIndex = 56;
             this.pulsePeriodDisplayLabel.Text = "100";
             this.pulsePeriodDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -688,9 +694,10 @@
             this.PHTMMainToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.PHTMMainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.COMPortToolStripComboBox});
-            this.PHTMMainToolStrip.Location = new System.Drawing.Point(800, 328);
+            this.PHTMMainToolStrip.Location = new System.Drawing.Point(1200, 512);
             this.PHTMMainToolStrip.Name = "PHTMMainToolStrip";
-            this.PHTMMainToolStrip.Size = new System.Drawing.Size(113, 28);
+            this.PHTMMainToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.PHTMMainToolStrip.Size = new System.Drawing.Size(161, 40);
             this.PHTMMainToolStrip.TabIndex = 59;
             this.PHTMMainToolStrip.Text = "toolStrip1";
             // 
@@ -707,7 +714,7 @@
             "COM8",
             "COM9"});
             this.COMPortToolStripComboBox.Name = "COMPortToolStripComboBox";
-            this.COMPortToolStripComboBox.Size = new System.Drawing.Size(99, 28);
+            this.COMPortToolStripComboBox.Size = new System.Drawing.Size(146, 40);
             this.COMPortToolStripComboBox.Text = global::PHTManager.Properties.Settings.Default.LastCOMPortSetting;
             this.COMPortToolStripComboBox.TextChanged += new System.EventHandler(this.COMPortToolStripComboBox_TextChanged);
             // 
@@ -719,24 +726,50 @@
             // 
             // TestControlPanel
             // 
+            this.TestControlPanel.Controls.Add(this.pulseLS3OFFButton);
+            this.TestControlPanel.Controls.Add(this.pulseLS3ONButton);
             this.TestControlPanel.Controls.Add(this.pulseLS1ONButton);
             this.TestControlPanel.Controls.Add(this.pulseLS2OFFButton);
             this.TestControlPanel.Controls.Add(this.pulseLS1OFFButton);
             this.TestControlPanel.Controls.Add(this.pulseLS2ONButton);
             this.TestControlPanel.Enabled = false;
-            this.TestControlPanel.Location = new System.Drawing.Point(801, 276);
-            this.TestControlPanel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TestControlPanel.Location = new System.Drawing.Point(1202, 431);
+            this.TestControlPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.TestControlPanel.Name = "TestControlPanel";
-            this.TestControlPanel.Size = new System.Drawing.Size(313, 48);
+            this.TestControlPanel.Size = new System.Drawing.Size(470, 75);
             this.TestControlPanel.TabIndex = 64;
+            // 
+            // pulseLS3OFFButton
+            // 
+            this.pulseLS3OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pulseLS3OFFButton.Location = new System.Drawing.Point(296, 36);
+            this.pulseLS3OFFButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pulseLS3OFFButton.Name = "pulseLS3OFFButton";
+            this.pulseLS3OFFButton.Size = new System.Drawing.Size(138, 28);
+            this.pulseLS3OFFButton.TabIndex = 69;
+            this.pulseLS3OFFButton.Text = "Pulse LS3 OFF";
+            this.pulseLS3OFFButton.UseVisualStyleBackColor = true;
+            this.pulseLS3OFFButton.Click += new System.EventHandler(this.pulseLS3OFFButton_Click);
+            // 
+            // pulseLS3ONButton
+            // 
+            this.pulseLS3ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pulseLS3ONButton.Location = new System.Drawing.Point(296, 0);
+            this.pulseLS3ONButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.pulseLS3ONButton.Name = "pulseLS3ONButton";
+            this.pulseLS3ONButton.Size = new System.Drawing.Size(138, 28);
+            this.pulseLS3ONButton.TabIndex = 68;
+            this.pulseLS3ONButton.Text = "Pulse LS3 ON";
+            this.pulseLS3ONButton.UseVisualStyleBackColor = true;
+            this.pulseLS3ONButton.Click += new System.EventHandler(this.pulseLS3ONButton_Click);
             // 
             // pulseLS1ONButton
             // 
             this.pulseLS1ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS1ONButton.Location = new System.Drawing.Point(1, 0);
-            this.pulseLS1ONButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pulseLS1ONButton.Location = new System.Drawing.Point(2, 0);
+            this.pulseLS1ONButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pulseLS1ONButton.Name = "pulseLS1ONButton";
-            this.pulseLS1ONButton.Size = new System.Drawing.Size(92, 18);
+            this.pulseLS1ONButton.Size = new System.Drawing.Size(138, 28);
             this.pulseLS1ONButton.TabIndex = 64;
             this.pulseLS1ONButton.Text = "Pulse LS1 ON";
             this.pulseLS1ONButton.UseVisualStyleBackColor = true;
@@ -745,10 +778,10 @@
             // pulseLS2OFFButton
             // 
             this.pulseLS2OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS2OFFButton.Location = new System.Drawing.Point(100, 23);
-            this.pulseLS2OFFButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pulseLS2OFFButton.Location = new System.Drawing.Point(150, 36);
+            this.pulseLS2OFFButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pulseLS2OFFButton.Name = "pulseLS2OFFButton";
-            this.pulseLS2OFFButton.Size = new System.Drawing.Size(92, 18);
+            this.pulseLS2OFFButton.Size = new System.Drawing.Size(138, 28);
             this.pulseLS2OFFButton.TabIndex = 67;
             this.pulseLS2OFFButton.Text = "Pulse LS2 OFF";
             this.pulseLS2OFFButton.UseVisualStyleBackColor = true;
@@ -757,10 +790,10 @@
             // pulseLS1OFFButton
             // 
             this.pulseLS1OFFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS1OFFButton.Location = new System.Drawing.Point(1, 23);
-            this.pulseLS1OFFButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pulseLS1OFFButton.Location = new System.Drawing.Point(2, 36);
+            this.pulseLS1OFFButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pulseLS1OFFButton.Name = "pulseLS1OFFButton";
-            this.pulseLS1OFFButton.Size = new System.Drawing.Size(92, 18);
+            this.pulseLS1OFFButton.Size = new System.Drawing.Size(138, 28);
             this.pulseLS1OFFButton.TabIndex = 65;
             this.pulseLS1OFFButton.Text = "Pulse LS1 OFF";
             this.pulseLS1OFFButton.UseVisualStyleBackColor = true;
@@ -769,10 +802,10 @@
             // pulseLS2ONButton
             // 
             this.pulseLS2ONButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pulseLS2ONButton.Location = new System.Drawing.Point(100, 0);
-            this.pulseLS2ONButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pulseLS2ONButton.Location = new System.Drawing.Point(150, 0);
+            this.pulseLS2ONButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pulseLS2ONButton.Name = "pulseLS2ONButton";
-            this.pulseLS2ONButton.Size = new System.Drawing.Size(92, 18);
+            this.pulseLS2ONButton.Size = new System.Drawing.Size(138, 28);
             this.pulseLS2ONButton.TabIndex = 66;
             this.pulseLS2ONButton.Text = "Pulse LS2 ON";
             this.pulseLS2ONButton.UseVisualStyleBackColor = true;
@@ -780,35 +813,35 @@
             // 
             // rawTargetPressureLabel
             // 
-            this.rawTargetPressureLabel.Location = new System.Drawing.Point(857, 142);
-            this.rawTargetPressureLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.rawTargetPressureLabel.Location = new System.Drawing.Point(1195, 223);
+            this.rawTargetPressureLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.rawTargetPressureLabel.Name = "rawTargetPressureLabel";
-            this.rawTargetPressureLabel.Size = new System.Drawing.Size(188, 16);
+            this.rawTargetPressureLabel.Size = new System.Drawing.Size(282, 25);
             this.rawTargetPressureLabel.TabIndex = 66;
-            this.rawTargetPressureLabel.Text = "Raw Target Pressure:";
+            this.rawTargetPressureLabel.Text = "Target cuff pressure: ADC:";
             // 
             // rawTargetPressureDisplayLabel
             // 
             this.rawTargetPressureDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rawTargetPressureDisplayLabel.Location = new System.Drawing.Point(1047, 142);
-            this.rawTargetPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.rawTargetPressureDisplayLabel.Location = new System.Drawing.Point(1453, 222);
+            this.rawTargetPressureDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.rawTargetPressureDisplayLabel.Name = "rawTargetPressureDisplayLabel";
-            this.rawTargetPressureDisplayLabel.Size = new System.Drawing.Size(56, 16);
+            this.rawTargetPressureDisplayLabel.Size = new System.Drawing.Size(84, 25);
             this.rawTargetPressureDisplayLabel.TabIndex = 65;
             this.rawTargetPressureDisplayLabel.Text = "512";
             this.rawTargetPressureDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // pumpPIDNumericUpDown
             // 
-            this.pumpPIDNumericUpDown.Location = new System.Drawing.Point(1042, 245);
-            this.pumpPIDNumericUpDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pumpPIDNumericUpDown.Location = new System.Drawing.Point(1565, 287);
+            this.pumpPIDNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.pumpPIDNumericUpDown.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.pumpPIDNumericUpDown.Name = "pumpPIDNumericUpDown";
-            this.pumpPIDNumericUpDown.Size = new System.Drawing.Size(60, 22);
+            this.pumpPIDNumericUpDown.Size = new System.Drawing.Size(90, 31);
             this.pumpPIDNumericUpDown.TabIndex = 67;
             this.pumpPIDNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.pumpPIDNumericUpDown.Value = new decimal(new int[] {
@@ -821,9 +854,10 @@
             // connectButton
             // 
             this.connectButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.connectButton.Location = new System.Drawing.Point(15, 13);
+            this.connectButton.Location = new System.Drawing.Point(22, 20);
+            this.connectButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(151, 34);
+            this.connectButton.Size = new System.Drawing.Size(226, 53);
             this.connectButton.TabIndex = 68;
             this.connectButton.Text = "Connect";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -831,19 +865,52 @@
             // 
             // saveDataButton
             // 
-            this.saveDataButton.Location = new System.Drawing.Point(172, 13);
+            this.saveDataButton.Location = new System.Drawing.Point(258, 20);
+            this.saveDataButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.saveDataButton.Name = "saveDataButton";
-            this.saveDataButton.Size = new System.Drawing.Size(175, 34);
+            this.saveDataButton.Size = new System.Drawing.Size(262, 53);
             this.saveDataButton.TabIndex = 69;
             this.saveDataButton.Text = "Start Save Segment";
             this.saveDataButton.UseVisualStyleBackColor = true;
             this.saveDataButton.Click += new System.EventHandler(this.saveDataButton_Click);
             // 
+            // cuffPressureADCUnitsLabel
+            // 
+            this.cuffPressureADCUnitsLabel.Location = new System.Drawing.Point(1552, 248);
+            this.cuffPressureADCUnitsLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cuffPressureADCUnitsLabel.Name = "cuffPressureADCUnitsLabel";
+            this.cuffPressureADCUnitsLabel.Size = new System.Drawing.Size(96, 25);
+            this.cuffPressureADCUnitsLabel.TabIndex = 72;
+            this.cuffPressureADCUnitsLabel.Text = "counts";
+            // 
+            // cuffPressureADCLabel
+            // 
+            this.cuffPressureADCLabel.Location = new System.Drawing.Point(1195, 249);
+            this.cuffPressureADCLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cuffPressureADCLabel.Name = "cuffPressureADCLabel";
+            this.cuffPressureADCLabel.Size = new System.Drawing.Size(238, 25);
+            this.cuffPressureADCLabel.TabIndex = 71;
+            this.cuffPressureADCLabel.Text = "Cuff pressure ADC:";
+            // 
+            // cuffPressureADCDisplayLabel
+            // 
+            this.cuffPressureADCDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cuffPressureADCDisplayLabel.Location = new System.Drawing.Point(1464, 248);
+            this.cuffPressureADCDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.cuffPressureADCDisplayLabel.Name = "cuffPressureADCDisplayLabel";
+            this.cuffPressureADCDisplayLabel.Size = new System.Drawing.Size(74, 25);
+            this.cuffPressureADCDisplayLabel.TabIndex = 70;
+            this.cuffPressureADCDisplayLabel.Text = "29";
+            this.cuffPressureADCDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // PHTManagerMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1125, 937);
+            this.ClientSize = new System.Drawing.Size(1688, 1464);
+            this.Controls.Add(this.cuffPressureADCUnitsLabel);
+            this.Controls.Add(this.cuffPressureADCLabel);
+            this.Controls.Add(this.cuffPressureADCDisplayLabel);
             this.Controls.Add(this.saveDataButton);
             this.Controls.Add(this.connectButton);
             this.Controls.Add(this.pumpPIDNumericUpDown);
@@ -876,7 +943,7 @@
             this.Controls.Add(this.systolicPressurePanel);
             this.Controls.Add(this.cuffPressureDisplayPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "PHTManagerMain";
             this.Text = "Permissive Hypotension Management";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PHTManagerMain_FormClosing);
@@ -962,6 +1029,11 @@
         private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.Button saveDataButton;
         private System.Windows.Forms.CheckBox calculatePulseRateCheckBox;
+        private System.Windows.Forms.Button pulseLS3OFFButton;
+        private System.Windows.Forms.Button pulseLS3ONButton;
+        private System.Windows.Forms.Label cuffPressureADCUnitsLabel;
+        private System.Windows.Forms.Label cuffPressureADCLabel;
+        private System.Windows.Forms.Label cuffPressureADCDisplayLabel;
     }
 }
 

@@ -33,13 +33,13 @@ void LS2OFF()
 void LS3ON()
 {
 	//ls2ONPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to LS1
-	digitalWrite(S2_PIN, 1);				// Set the S3 control pin HIGH to set S3 to ON position
+	digitalWrite(S3_PIN, 1);				// Set the S3 control pin HIGH to set S3 to ON position
 	ls3IsON = true;							// Set flag indicating S3 is ON
 }
 
 void LS3OFF()
 {
 	//ls2OFFPulseCounter = PULSE_WIDTH;		// Initiate pulse to connect cuff to bleed port
-	digitalWrite(S2_PIN, 0);				// Set the S3 control pin LOW to set S3 to OFF position
+	digitalWrite(S3_PIN, 0);				// Set the S3 control pin LOW to set S3 to OFF position
 	ls3IsON = false;						// Set flag indicating S3 is OFF
 }
