@@ -81,7 +81,7 @@ int fadeRate = 0;					// used to fade LED on with PWM on fadePin
 double dCP;
 double dPumpSpeed = 255.0;
 double dTargetCP = 0.0;
-PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 0.5, 0.1, 0.2, DIRECT);
+PID pumpPID(&dCP, &dPumpSpeed, &dTargetCP, 2.00, 0.50, 0.25, DIRECT);
 
 //uint8_t CuffPID = 127;				// Output setting from Cuff PID controller
 int pumpSpeed = 0;					// PWM setting for cuff pump
@@ -117,7 +117,7 @@ void setup()
 	analogWrite(PUMP_PIN, pumpSpeed);
 	dCP = analogRead(CP_PIN);
 	dTargetCP = 0.0;
-	pumpPID.SetOutputLimits(0.0, 255.0);
+	pumpPID.SetOutputLimits(0.0, 191.0);
 	pumpPID.SetMode(MANUAL);
 
 	digitalWrite(S1_PIN, 0);				// Turn S1 off
@@ -449,20 +449,20 @@ void loop()
 			pumpSpeed = dPumpSpeed;
 			analogWrite(PUMP_PIN, pumpSpeed);
 
-			//// If cuff pressure > target cuff pressure then stop pump and set valves for Hold state
-			//if (CP >= targetCP)
-			//{
-			//	// Transition to Hold state:
-			//	State = Hold;
-			//	// Switch valves and set pump for Hold state:
-			//	LS1ON();								// Connect LS1 to pump
-			//	LS2ON();								// Connect cuff to LS1
+			// If cuff pressure >= target cuff pressure then stop pump and set valves for Hold state
+			if (CP >= targetCP)
+			{
+				LS1OFF();								// Disconnect pump from manifold
+				LS2OFF();								// Close bleed valve
+				LS3OFF();								// Close vent valve
+				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+				pumpSpeed = 0;							// Turn pump off
+				analogWrite(PUMP_PIN, pumpSpeed);
 
-			//	pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			//	pumpSpeed = 0;							// Turn pump off
-			//	analogWrite(PUMP_PIN, pumpSpeed);
+				// Set state:
+				State = Hold;
 
-			//}
+			}
 
 			break;
 

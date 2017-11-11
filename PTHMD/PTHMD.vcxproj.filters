@@ -18,6 +18,7 @@
     <None Include="PTHMD.ino" />
     <None Include="Interrupts.ino" />
     <None Include="LSControlFunctions.ino" />
+    <None Include="..\phtmanager\program.cs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.PTHMD.vsarduino.h">
