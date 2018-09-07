@@ -97,6 +97,8 @@
             this.cuffPressureADCUnitsLabel = new System.Windows.Forms.Label();
             this.cuffPressureADCLabel = new System.Windows.Forms.Label();
             this.cuffPressureADCDisplayLabel = new System.Windows.Forms.Label();
+            this.uploadFirmwareButton = new System.Windows.Forms.Button();
+            this.openHexFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
@@ -903,11 +905,29 @@
             this.cuffPressureADCDisplayLabel.Text = "29";
             this.cuffPressureADCDisplayLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // uploadFirmwareButton
+            // 
+            this.uploadFirmwareButton.Location = new System.Drawing.Point(1200, 349);
+            this.uploadFirmwareButton.Name = "uploadFirmwareButton";
+            this.uploadFirmwareButton.Size = new System.Drawing.Size(290, 33);
+            this.uploadFirmwareButton.TabIndex = 73;
+            this.uploadFirmwareButton.Text = "Upload Firmware";
+            this.uploadFirmwareButton.UseVisualStyleBackColor = true;
+            this.uploadFirmwareButton.Click += new System.EventHandler(this.uploadFirmwareButton_Click);
+            // 
+            // openHexFileDialog
+            // 
+            this.openHexFileDialog.DefaultExt = "hex";
+            this.openHexFileDialog.Filter = "HEX files (*.hex)|*.hex|All files (*.*)|*.";
+            this.openHexFileDialog.SupportMultiDottedExtensions = true;
+            this.openHexFileDialog.Title = "Open firmware file to upload";
+            // 
             // PHTManagerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1688, 1464);
+            this.Controls.Add(this.uploadFirmwareButton);
             this.Controls.Add(this.cuffPressureADCUnitsLabel);
             this.Controls.Add(this.cuffPressureADCLabel);
             this.Controls.Add(this.cuffPressureADCDisplayLabel);
@@ -1034,6 +1054,8 @@
         private System.Windows.Forms.Label cuffPressureADCUnitsLabel;
         private System.Windows.Forms.Label cuffPressureADCLabel;
         private System.Windows.Forms.Label cuffPressureADCDisplayLabel;
+        private System.Windows.Forms.Button uploadFirmwareButton;
+        private System.Windows.Forms.OpenFileDialog openHexFileDialog;
     }
 }
 

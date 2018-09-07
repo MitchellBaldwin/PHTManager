@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using ArduinoUploader;
 
 namespace PHTManager
 {
@@ -732,6 +733,25 @@ namespace PHTManager
         }
 
         #endregion Menu, toolbar and control event handlers
+
+        private void uploadFirmwareButton_Click(object sender, EventArgs e)
+        {
+            String PHTMHostPath = Application.StartupPath;
+            openHexFileDialog.InitialDirectory = PHTMHostPath;
+            Console.WriteLine("Executable path: {0}", PHTMHostPath);
+
+            if (openHexFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var uploader = new ArduinoSketchUploader(
+                new ArduinoSketchUploaderOptions()
+                {
+                    FileName = openHexFileDialog.FileName,
+                    PortName = PHMSerialPort.PortName,
+                    ArduinoModel = ArduinoUploader.Hardware.ArduinoModel.UnoR3
+                });
+                uploader.UploadSketch();
+            }
+        }
 
     }
 }
