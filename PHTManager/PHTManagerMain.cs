@@ -737,19 +737,39 @@ namespace PHTManager
         private void uploadFirmwareButton_Click(object sender, EventArgs e)
         {
             String PHTMHostPath = Application.StartupPath;
+            String STATFirmwareHexFileName = "PTHMD.hex";
+            openHexFileDialog.FileName = STATFirmwareHexFileName;
             openHexFileDialog.InitialDirectory = PHTMHostPath;
-            Console.WriteLine("Executable path: {0}", PHTMHostPath);
 
             if (openHexFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                var uploader = new ArduinoSketchUploader(
-                new ArduinoSketchUploaderOptions()
+                DialogResult result = MessageBox.Show("Are you sure you wish to update the STAT firmware from file: " +
+                                                       openHexFileDialog.FileName,
+                                                       "Confirm firmware update",
+                                                       MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
                 {
-                    FileName = openHexFileDialog.FileName,
-                    PortName = PHMSerialPort.PortName,
-                    ArduinoModel = ArduinoUploader.Hardware.ArduinoModel.UnoR3
-                });
-                uploader.UploadSketch();
+                    var uploader = new ArduinoSketchUploader(
+                    new ArduinoSketchUploaderOptions()
+                    {
+                        FileName = openHexFileDialog.FileName,
+                        PortName = PHMSerialPort.PortName,
+                        ArduinoModel = ArduinoUploader.Hardware.ArduinoModel.UnoR3
+                    });
+                    try
+                    {
+                        uploader.UploadSketch();
+                        string successString = string.Format(format: "Successfully updated STAT firmware from file: {0}", arg0: openHexFileDialog.FileName);
+                        Console.WriteLine(successString);
+                        MessageBox.Show(successString, "Success");
+                    }
+                    catch (Exception ex)
+                    {
+                        string errorString = "Cycle power to STAT device and try again\n\n" + ex.Message;
+                        MessageBox.Show(errorString, "Error updating STAT firmware");
+                    }
+                    
+                }
             }
         }
 

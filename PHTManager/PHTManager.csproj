@@ -50,7 +50,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>dating.ico</ApplicationIcon>
+    <ApplicationIcon>greenheart.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -119,7 +119,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dating.ico" />
+    <Content Include="greenheart.ico" />
     <Content Include="Resources\off.png" />
     <None Include="Resources\on.ico" />
     <None Include="Resources\down.ico" />
