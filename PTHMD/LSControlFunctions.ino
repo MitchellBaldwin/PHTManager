@@ -43,3 +43,4 @@ void LS3OFF()
 	digitalWrite(S3_PIN, 0);				// Set the S3 control pin LOW to set S3 to OFF position
 	ls3IsON = false;						// Set flag indicating S3 is OFF
 }
+

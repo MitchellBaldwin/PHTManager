@@ -2,6 +2,7 @@
 // Mitch Baldwin	RMBIMedical	for U of M CIRCC	24 Apr 2015
 // v 1.0
 // v 1.1	28 Oct 2017	Updated to support 3 solenoid control and finger tip PPG sensor
+// v 1.2	10 Sep 2018	Added controlled bleed rate and firmware version retrieval
 //
 // Base timer code from: Arduino timer CTC interrupt example (www.engblaze.com)
 
@@ -10,6 +11,10 @@
 #include <PacketSerial.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+
+// Firmware version
+#define MAJOR_VERSION 1
+#define MINOR_VERSION 2
 
 // Solenoid latch pulse width, ms/2:
 #define PULSE_WIDTH 50
@@ -263,7 +268,6 @@ void loop()
 		switch (commandMsgReceived)
 		{
 		case 0x00:	// Text message message type
-			
 
 			break;
 
@@ -375,60 +379,86 @@ void loop()
 			break;
 
 		case 0x10:	// FillCuffMsgType
-			LS1ON();								// Connect pump to manifold
-			LS2OFF();								// Close bleed valve
-			LS3OFF();								// Close vent valve
-			//pumpSpeed = inPacket[0x01];			// Read commanded initial pump speed
-			//analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
-
-			// Read and set target cuff pressure:
+			// Read target cuff pressure:
 			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
-			dTargetCP = targetCP;
-			pumpPID.SetMode(AUTOMATIC);
+			SetFillState();
 
-			// Set state:
-			State = Fill;
+			//LS1ON();								// Connect pump to manifold
+			//LS2OFF();								// Close bleed valve
+			//LS3OFF();								// Close vent valve
+			////pumpSpeed = inPacket[0x01];			// Read commanded initial pump speed
+			////analogWrite(PUMP_PIN, pumpSpeed);		// Set initial pump speed
+
+			//dTargetCP = targetCP;
+			//pumpPID.SetMode(AUTOMATIC);
+
+			//// Set state:
+			//State = Fill;
 
 			break;
 
 		case 0x11:	// HoldCuffMsgType
-			LS1OFF();								// Disconnect pump from manifold
-			LS2OFF();								// Close bleed valve
-			LS3OFF();								// Close vent valve
-			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0;							// Turn pump off
-			analogWrite(PUMP_PIN, pumpSpeed);
+			SetHoldState();
 
-			// Set state:
-			State = Hold;
+			//LS1OFF();								// Disconnect pump from manifold
+			//LS2OFF();								// Close bleed valve
+			//LS3OFF();								// Close vent valve
+			//pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+			//pumpSpeed = 0;							// Turn pump off
+			//analogWrite(PUMP_PIN, pumpSpeed);
+
+			//// Set state:
+			//State = Hold;
 			break;
 
 		case 0x12:	// BleedCuffMsgTypee
-			LS1OFF();								// Disconnect pump from manifold
-			LS2ON();								// Open bleed valve
-			LS3OFF();								// Close vent valve
-			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0;							// Turn pump off
-			analogWrite(PUMP_PIN, pumpSpeed);
-
-			// Read and set target cuff pressure:
+			// Read target cuff pressure:
 			targetCP = inPacket[0x03] * 0xFF + inPacket[0x02];
-			dTargetCP = targetCP;
+			SetBleedState();
 
-			// Set state:
-			State = Bleed;
+			//LS1OFF();								// Disconnect pump from manifold
+			//LS2ON();								// Open bleed valve
+			//LS3OFF();								// Close vent valve
+
+			//dTargetCP = targetCP;					// Set the double target pressure for the PID controller
+			//pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+			//pumpSpeed = 0;							// Turn pump off
+			//analogWrite(PUMP_PIN, pumpSpeed);
+
+			//// Set state:
+			//State = Bleed;
 			break;
 
 		case 0x13:	// VentCuffMsgTypee
-			LS1OFF();								// Disconnect pump from manifold
-			LS2OFF();								// Close bleed valve
-			LS3ON();								// Open vent valve
-			pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-			pumpSpeed = 0;							// Turn pump off
-			analogWrite(PUMP_PIN, pumpSpeed);
+			SetVentState();
 
-			// Set state:
-			State = Vent;
+			//LS1OFF();								// Disconnect pump from manifold
+			//LS2OFF();								// Close bleed valve
+			//LS3ON();								// Open vent valve
+			//pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+			//pumpSpeed = 0;							// Turn pump off
+			//analogWrite(PUMP_PIN, pumpSpeed);
+
+			//// Set state:
+			//State = Vent;
+			break;
+
+		case 0x20:	// Expansion
+
+			break;
+
+		case 0xF0:	// Get firmware version
+			outPacket[0x00] = 0xF0;					// GetFirmwareVersion message type
+			outPacket[0x01] = MAJOR_VERSION;		// Major version
+			outPacket[0x02] = MINOR_VERSION;		// Minor version
+
+			for (int i = 0x03; i < PACKET_SIZE - 1; ++i)
+			{
+				outPacket[i] = 0x00;
+			}
+
+			SendUSBPacket();
+
 			break;
 
 		default:
@@ -452,15 +482,17 @@ void loop()
 			// If cuff pressure >= target cuff pressure then stop pump and set valves for Hold state
 			if (CP >= targetCP)
 			{
-				LS1OFF();								// Disconnect pump from manifold
-				LS2OFF();								// Close bleed valve
-				LS3OFF();								// Close vent valve
-				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-				pumpSpeed = 0;							// Turn pump off
-				analogWrite(PUMP_PIN, pumpSpeed);
+				SetHoldState();
+				
+				//LS1OFF();								// Disconnect pump from manifold
+				//LS2OFF();								// Close bleed valve
+				//LS3OFF();								// Close vent valve
+				//pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+				//pumpSpeed = 0;							// Turn pump off
+				//analogWrite(PUMP_PIN, pumpSpeed);
 
-				// Set state:
-				State = Hold;
+				//// Set state:
+				//State = Hold;
 
 			}
 
@@ -476,16 +508,18 @@ void loop()
 			// If cuff pressure < target cuff pressure then set valves for Hold state
 			if (CP <= targetCP)
 			{
-				// Transition to Hold state:
-				State = Hold;
-				// Switch valves and set pump for Hold state:
-				LS1ON();								// Connect cuff to manifold
-				LS2OFF();								// Close bleed valve
-				LS3OFF();								// Close vent valve
+				SetHoldState();
 
-				pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
-				pumpSpeed = 0;							// Turn pump off
-				analogWrite(PUMP_PIN, pumpSpeed);
+				//// Transition to Hold state:
+				//State = Hold;
+				//// Switch valves and set pump for Hold state:
+				//LS1ON();								// Connect cuff to manifold
+				//LS2OFF();								// Close bleed valve
+				//LS3OFF();								// Close vent valve
+
+				//pumpPID.SetMode(MANUAL);				// Stop the pump PID controller
+				//pumpSpeed = 0;							// Turn pump off
+				//analogWrite(PUMP_PIN, pumpSpeed);
 
 			}
 

@@ -107,6 +107,15 @@
             this.bleedRateIncreaseButton = new System.Windows.Forms.Button();
             this.bleedRateLebel = new System.Windows.Forms.Label();
             this.bleedRateDisplayLabel = new System.Windows.Forms.Label();
+            this.AssemblyVersionLabel = new System.Windows.Forms.Label();
+            this.AssemblyVersionDisplayLabel = new System.Windows.Forms.Label();
+            this.FileVersionLabel = new System.Windows.Forms.Label();
+            this.FileVersionDisplayLabel = new System.Windows.Forms.Label();
+            this.ProductVersionLabel = new System.Windows.Forms.Label();
+            this.ProductVersionDisplayLabel = new System.Windows.Forms.Label();
+            this.FirmwareVersionLabel = new System.Windows.Forms.Label();
+            this.FirmwareVersionDisplayLabel = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.cuffPressureDisplayPanel.SuspendLayout();
             this.systolicPressurePanel.SuspendLayout();
             this.pulseRatePanel.SuspendLayout();
@@ -565,7 +574,7 @@
             "COM9"});
             this.COMPortToolStripComboBox.Name = "COMPortToolStripComboBox";
             this.COMPortToolStripComboBox.Size = new System.Drawing.Size(146, 40);
-            this.COMPortToolStripComboBox.Text = global::PHTManager.Properties.Settings.Default.LastCOMPortSetting;
+            this.COMPortToolStripComboBox.Text = "COM1";
             this.COMPortToolStripComboBox.TextChanged += new System.EventHandler(this.COMPortToolStripComboBox_TextChanged);
             // 
             // PHTMSaveDataFileDialog
@@ -811,6 +820,15 @@
             // 
             // SettingsTabPage
             // 
+            this.SettingsTabPage.Controls.Add(this.button1);
+            this.SettingsTabPage.Controls.Add(this.FirmwareVersionLabel);
+            this.SettingsTabPage.Controls.Add(this.FirmwareVersionDisplayLabel);
+            this.SettingsTabPage.Controls.Add(this.ProductVersionLabel);
+            this.SettingsTabPage.Controls.Add(this.ProductVersionDisplayLabel);
+            this.SettingsTabPage.Controls.Add(this.AssemblyVersionLabel);
+            this.SettingsTabPage.Controls.Add(this.AssemblyVersionDisplayLabel);
+            this.SettingsTabPage.Controls.Add(this.FileVersionLabel);
+            this.SettingsTabPage.Controls.Add(this.FileVersionDisplayLabel);
             this.SettingsTabPage.Controls.Add(this.systemPanel);
             this.SettingsTabPage.Controls.Add(this.rawTargetPressureLabel);
             this.SettingsTabPage.Controls.Add(this.uploadFirmwareButton);
@@ -872,6 +890,7 @@
             this.testModeCheckBox.TabIndex = 46;
             this.testModeCheckBox.Text = "Test mode";
             this.testModeCheckBox.UseVisualStyleBackColor = true;
+            this.testModeCheckBox.CheckedChanged += new System.EventHandler(this.testModeCheckBox_CheckedChanged);
             // 
             // phmspStopBitsDisplayLabel
             // 
@@ -1047,6 +1066,93 @@
             this.bleedRateDisplayLabel.Text = "30";
             this.bleedRateDisplayLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // AssemblyVersionLabel
+            // 
+            this.AssemblyVersionLabel.Location = new System.Drawing.Point(6, 95);
+            this.AssemblyVersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.AssemblyVersionLabel.Name = "AssemblyVersionLabel";
+            this.AssemblyVersionLabel.Size = new System.Drawing.Size(192, 25);
+            this.AssemblyVersionLabel.TabIndex = 76;
+            this.AssemblyVersionLabel.Text = "Assembly version:";
+            // 
+            // AssemblyVersionDisplayLabel
+            // 
+            this.AssemblyVersionDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AssemblyVersionDisplayLabel.Location = new System.Drawing.Point(210, 94);
+            this.AssemblyVersionDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.AssemblyVersionDisplayLabel.Name = "AssemblyVersionDisplayLabel";
+            this.AssemblyVersionDisplayLabel.Size = new System.Drawing.Size(195, 25);
+            this.AssemblyVersionDisplayLabel.TabIndex = 75;
+            this.AssemblyVersionDisplayLabel.Text = "1.0.0.0";
+            // 
+            // FileVersionLabel
+            // 
+            this.FileVersionLabel.Location = new System.Drawing.Point(6, 121);
+            this.FileVersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.FileVersionLabel.Name = "FileVersionLabel";
+            this.FileVersionLabel.Size = new System.Drawing.Size(192, 25);
+            this.FileVersionLabel.TabIndex = 78;
+            this.FileVersionLabel.Text = "File version:";
+            // 
+            // FileVersionDisplayLabel
+            // 
+            this.FileVersionDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FileVersionDisplayLabel.Location = new System.Drawing.Point(210, 120);
+            this.FileVersionDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.FileVersionDisplayLabel.Name = "FileVersionDisplayLabel";
+            this.FileVersionDisplayLabel.Size = new System.Drawing.Size(195, 25);
+            this.FileVersionDisplayLabel.TabIndex = 77;
+            this.FileVersionDisplayLabel.Text = "1.0.0.0";
+            // 
+            // ProductVersionLabel
+            // 
+            this.ProductVersionLabel.Location = new System.Drawing.Point(6, 146);
+            this.ProductVersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.ProductVersionLabel.Name = "ProductVersionLabel";
+            this.ProductVersionLabel.Size = new System.Drawing.Size(192, 25);
+            this.ProductVersionLabel.TabIndex = 80;
+            this.ProductVersionLabel.Text = "Product version:";
+            // 
+            // ProductVersionDisplayLabel
+            // 
+            this.ProductVersionDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProductVersionDisplayLabel.Location = new System.Drawing.Point(210, 145);
+            this.ProductVersionDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.ProductVersionDisplayLabel.Name = "ProductVersionDisplayLabel";
+            this.ProductVersionDisplayLabel.Size = new System.Drawing.Size(195, 25);
+            this.ProductVersionDisplayLabel.TabIndex = 79;
+            this.ProductVersionDisplayLabel.Text = "1.0.0.0";
+            // 
+            // FirmwareVersionLabel
+            // 
+            this.FirmwareVersionLabel.Location = new System.Drawing.Point(601, 14);
+            this.FirmwareVersionLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.FirmwareVersionLabel.Name = "FirmwareVersionLabel";
+            this.FirmwareVersionLabel.Size = new System.Drawing.Size(192, 25);
+            this.FirmwareVersionLabel.TabIndex = 82;
+            this.FirmwareVersionLabel.Text = "Firmware version:";
+            // 
+            // FirmwareVersionDisplayLabel
+            // 
+            this.FirmwareVersionDisplayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FirmwareVersionDisplayLabel.Location = new System.Drawing.Point(805, 13);
+            this.FirmwareVersionDisplayLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+            this.FirmwareVersionDisplayLabel.Name = "FirmwareVersionDisplayLabel";
+            this.FirmwareVersionDisplayLabel.Size = new System.Drawing.Size(195, 25);
+            this.FirmwareVersionDisplayLabel.TabIndex = 81;
+            this.FirmwareVersionDisplayLabel.Text = "x.x.x.x";
+            // 
+            // button1
+            // 
+            this.button1.AutoSize = true;
+            this.button1.Location = new System.Drawing.Point(302, 8);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(290, 35);
+            this.button1.TabIndex = 83;
+            this.button1.Text = "Get Firmware Version";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.GetFirmwareVersionButton_Click);
+            // 
             // PHTManagerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -1174,6 +1280,15 @@
         private System.Windows.Forms.Button bleedRateIncreaseButton;
         private System.Windows.Forms.Label bleedRateLebel;
         private System.Windows.Forms.Label bleedRateDisplayLabel;
+        private System.Windows.Forms.Label ProductVersionLabel;
+        private System.Windows.Forms.Label ProductVersionDisplayLabel;
+        private System.Windows.Forms.Label AssemblyVersionLabel;
+        private System.Windows.Forms.Label AssemblyVersionDisplayLabel;
+        private System.Windows.Forms.Label FileVersionLabel;
+        private System.Windows.Forms.Label FileVersionDisplayLabel;
+        private System.Windows.Forms.Label FirmwareVersionLabel;
+        private System.Windows.Forms.Label FirmwareVersionDisplayLabel;
+        private System.Windows.Forms.Button button1;
     }
 }
 

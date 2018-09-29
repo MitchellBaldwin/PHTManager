@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using ArduinoUploader;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace PHTManager
 {
@@ -41,6 +43,9 @@ namespace PHTManager
         public const Byte VentCuffMsgType = 0x13;           // Set valves to vent cuff (Host to PHTMD)
 
         public const Byte SensorDataMsgType = 0x18;         // Packet containing PPG & pressure sensor measurements (PHTMD to Host)
+
+        public const Byte GetFirmwareVersionMsgType = 0x20; // Retrieve firmware version from STAT device
+
         #endregion Message type definitions
 
         // Buffers for serial communication with the PHTM device
@@ -70,6 +75,9 @@ namespace PHTManager
         ZedGraph.LineItem CPLine;
         ZedGraph.PointPairList CuffPIDList = new ZedGraph.PointPairList();
         ZedGraph.LineItem CuffPIDLine;
+
+        string fwVersionString = "x.x.x.x";
+        public string FwVersionString { get => fwVersionString; set => fwVersionString = value; }
 
         #region Flags
         // Flag indicating whether the data feed from the embedded system is active
@@ -146,6 +154,13 @@ namespace PHTManager
 
         private void PHTManagerMain_Load(object sender, EventArgs e)
         {
+            string assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            AssemblyVersionDisplayLabel.Text = assemblyVersion;
+            string fileVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+            FileVersionDisplayLabel.Text = fileVersion;
+            string productVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
+            ProductVersionDisplayLabel.Text = productVersion;
+
             PHMSerialPort.PortName = COMPortToolStripComboBox.Text;
             phmspPortDisplayLabel.Text = PHMSerialPort.PortName;
             phmspBaudRateDisplayLabel.Text = PHMSerialPort.BaudRate.ToString();
@@ -319,15 +334,10 @@ namespace PHTManager
             pulseRateDisplayLabel.Text = curDataPoint.BPM.ToString();
             pulsePeriodDisplayLabel.Text = curDataPoint.IBI.ToString();
 
-            //if (dataFeedActive)
-            //{
-            //    this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.on;
-            //}
-            //else
-            //{
-            //    this.startStopDataToolStripButton.Image = global::PHTManager.Properties.Resources.off;
-            //}
-            //dataSaveActive = false;
+            if (PHMMessageReceived)     // Handle other messages received from STAT device
+            {
+                FirmwareVersionDisplayLabel.Text = FwVersionString;
+            }
 
         }
 
@@ -410,6 +420,11 @@ namespace PHTManager
                     }
                 }
 
+                if (receivedMessageType == GetFirmwareVersionMsgType)
+                {
+                    fwVersionString = string.Format("{0}.{1}.0.0", packetBuffer[0x01], packetBuffer[0x02]);
+                    PHMMessageReceived = true;
+                }
             }
             catch (System.TimeoutException)
             {
@@ -773,5 +788,18 @@ namespace PHTManager
             }
         }
 
+        private void GetFirmwareVersionButton_Click(object sender, EventArgs e)
+        {
+            BuildCommMessage(GetFirmwareVersionMsgType, dummy);
+            SendCommandMessage();
+            if (PHMSerialPort.IsOpen)
+            {
+                FirmwareVersionDisplayLabel.Text = "Reading";
+            }
+            else
+            {
+                FirmwareVersionDisplayLabel.Text = "Not connected";
+            }
+        }
     }
 }

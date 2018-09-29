@@ -196,7 +196,9 @@ ISR(TIMER2_COMPA_vect){                         // triggered when Timer2 counts 
 		}
 	}
 
-	// Read pressure and PPG2 sensors
+	// Read pressure and PPG2 sensors, send data packet to host
+	// Executes every PRES_PER_PPG * T (interrupt period)
+	// For example, 20 * 0.002 s = 0.040 s = 40 ms
 	if (--pSampleCounter <= 0)
 	{
 		int cpTotal = 0;

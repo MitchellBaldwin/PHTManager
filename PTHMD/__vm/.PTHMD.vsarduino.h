@@ -79,5 +79,6 @@ typedef void *__builtin_va_list;
 #include "PTHMD.ino"
 #include "Interrupts.ino"
 #include "LSControlFunctions.ino"
+#include "States.ino"
 #endif
 #endif
