@@ -36,27 +36,21 @@ namespace PHTManager
             set { pPG2 = value; }
         }
 
-        public ushort CPZero = 29;
-        public ushort CPRaw = 29;
-        //public ushort CPZero = 0;
-        public double CPGain = 22.7692;     // mmHg/count from measurement on 11 Nov 2017
-        //public double CPGain = 20.3467;     // mmHg/count from MPVX7025DP with 2x scaling circuit
-        //public double CPGain = 28.47;
-        //public double CPGain = 26.85;
-        //public double CPGain = 20.0;
+        private ushort cPRaw = StaticPHTMDataPoint.CPZero;  // Cuff pressure in ADC counts
+        public ushort CPRaw { get => cPRaw; set => cPRaw = value; }
 
-        private int cP;
-        public int CP
+        private double cP;                                     // Cuff pressure in mmHg
+        public double CP
         {
             get
             {
-                cP = (int)((CPRaw - CPZero) * (CPGain / 100.0));
+                cP = (double)((CPRaw - StaticPHTMDataPoint.CPZero) * (StaticPHTMDataPoint.CPGain / 100.0));
                 return cP;
             }
-            set
-            {
-                cP = value;
-            }
+            //set
+            //{
+            //    cP = value;
+            //}
         }
 
         int cuffPID = 127;
@@ -80,21 +74,6 @@ namespace PHTManager
             set { iBI = value; }
         }
 
-        private int targetCuffPressure = 90;
-        public int TargetCuffPressure
-        {
-            get { return targetCuffPressure; }
-            set
-            {
-                targetCuffPressure = value;
-            }
-        }
-
-        public int TargetCuffPressureToRaw()
-        {
-            return (targetCuffPressure * 100) / (int)CPGain + CPZero;
-        }
-
         // Default constructor
         public PHTMDataPoint()
         {
@@ -102,7 +81,7 @@ namespace PHTManager
             dataTimeMS = 0;
             pPG1 = 0;
             pPG2 = 0;
-            cP = 0;
+            cPRaw = StaticPHTMDataPoint.CPZero;
         }
 
         public PHTMDataPoint(double time, int ppg1, int cp)
@@ -111,7 +90,7 @@ namespace PHTManager
             dataTimeMS = 0;
             pPG1 = ppg1;
             pPG2 = 0;
-            cP = cp;
+            cPRaw = (ushort)((int)(cp * 100.0 / StaticPHTMDataPoint.CPGain) + StaticPHTMDataPoint.CPZero);
         }
 
         public PHTMDataPoint(double time, Int32 timeMS, int ppg1, int ppg2, int cp)
@@ -120,7 +99,7 @@ namespace PHTManager
             dataTimeMS = timeMS;
             pPG1 = ppg1;
             pPG2 = ppg2;
-            cP = cp;
+            cPRaw = (ushort)((int)(cp * 100.0 / StaticPHTMDataPoint.CPGain) + StaticPHTMDataPoint.CPZero);
         }
     }
 

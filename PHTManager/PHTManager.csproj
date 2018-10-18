@@ -64,6 +64,7 @@
     </Reference>
     <Reference Include="RJCP.SerialPortStream, Version=2.1.4.0, Culture=neutral, PublicKeyToken=5f5e7b70c6a74deb, processorArchitecture=MSIL">
       <HintPath>..\packages\SerialPortStream.2.1.4\lib\net45\RJCP.SerialPortStream.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +78,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="ZedGraph">
       <HintPath>..\..\zedgraph_dll_v515\zedgraph_dll_v5.1.5\ZedGraph.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +93,7 @@
     <Compile Include="PHTMDataPoint.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StaticPHTMDataPoint.cs" />
     <EmbeddedResource Include="PHTManagerMain.resx">
       <DependentUpon>PHTManagerMain.cs</DependentUpon>
     </EmbeddedResource>

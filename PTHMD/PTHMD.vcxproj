@@ -70,7 +70,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\phtmanager\program.cs" />
     <None Include="Interrupts.ino">
       <FileType>CppCode</FileType>
     </None>
@@ -85,7 +84,11 @@
     <ClInclude Include="__vm\.PTHMD.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="States.ino" />
+    <ClCompile Include="States.ino">
+      <FileType>CppCode</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent>false</DeploymentContent>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

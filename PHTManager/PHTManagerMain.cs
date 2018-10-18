@@ -64,7 +64,7 @@ namespace PHTManager
         // Structures to hold dynamic measurements from PHTM device
         PHTMDataPoint curDataPoint = new PHTMDataPoint(0.0, 0, 0, 0, 0);
         PHTMDataPoints dataPointList = new PHTMDataPoints();
-        PHTMDataPoint staticDataPoint = new PHTMDataPoint();
+        StaticPHTMDataPoint staticDataPoint = new StaticPHTMDataPoint();
         
         // Objects used to graph data
         ZedGraph.PointPairList PPG1List = new ZedGraph.PointPairList();
@@ -76,8 +76,11 @@ namespace PHTManager
         ZedGraph.PointPairList CuffPIDList = new ZedGraph.PointPairList();
         ZedGraph.LineItem CuffPIDLine;
 
-        string fwVersionString = "x.x.x.x";
+        private string fwVersionString = "x.x.x.x";     // Firmware version string
         public string FwVersionString { get => fwVersionString; set => fwVersionString = value; }
+
+        private Byte fwControlLoopDelay = 0x0A;          // Firmware control loop delay in ms
+        public byte FwControlLoopDelay { get => fwControlLoopDelay; set => fwControlLoopDelay = value; }
 
         #region Flags
         // Flag indicating whether the data feed from the embedded system is active
@@ -144,6 +147,7 @@ namespace PHTManager
             get { return commChecksumErrorFlag; }
             set { commChecksumErrorFlag = value; }
         }
+
         #endregion Flags
 
         #region Form level methods
@@ -174,6 +178,15 @@ namespace PHTManager
 
             CreateGraph(phmDataZedGraph);
             SetSize();
+
+            staticDataPoint.TargetCuffPressure = (ushort)Convert.ToInt16(targetPressureDisplayLabel.Text);
+            rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureRaw.ToString();
+            staticDataPoint.FillRate = (ushort)Convert.ToInt16(cuffInflationRateDisplayLabel.Text);
+            staticDataPoint.BleedRate = (ushort)Convert.ToInt16(bleedRateDisplayLabel.Text);
+            cuffDeflationRateDisplayLabel.Text = bleedRateDisplayLabel.Text;
+            staticDataPoint.PumpSpeed = (Byte)pumpPIDNumericUpDown.Value;
+            rawBleedRateDisplayLabel.Text = staticDataPoint.BleedRateRaw.ToString();
+
         }
 
         private void PHTManagerMain_Resize(object sender, EventArgs e)
@@ -325,10 +338,8 @@ namespace PHTManager
             phmMainPain.AxisChange();
             phmDataZedGraph.Invalidate();
 
-            cuffPressureDisplayLabel.Text = curDataPoint.CP.ToString();
-            //cuffPressureDisplayLabel.Text = curDataPoint.CPRaw.ToString();
+            cuffPressureDisplayLabel.Text = curDataPoint.CP.ToString("###");
             targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
-            //targetPressureDisplayLabel.Text = curDataPoint.TargetCuffPressure.ToString();
             cuffPressureADCDisplayLabel.Text = curDataPoint.CPRaw.ToString();
 
             pulseRateDisplayLabel.Text = curDataPoint.BPM.ToString();
@@ -403,7 +414,6 @@ namespace PHTManager
                     curDataPoint.DataTime = new ZedGraph.XDate(DateTime.Now).XLDate;
                     curDataPoint.PPG1 = packetBuffer[0x01] + packetBuffer[0x02] * 256;
                     curDataPoint.CPRaw = (ushort)(packetBuffer[0x03] + packetBuffer[0x04] * 256);
-                    //curDataPoint.TargetCuffPressure = Int32.Parse(targetPressureDisplayLabel.Text);
 
                     curDataPoint.CuffPID = packetBuffer[0x05];
                     curDataPoint.BPM = packetBuffer[0x06] + packetBuffer[0x07] * 256;
@@ -624,7 +634,7 @@ namespace PHTManager
                                 row.Add(dp.DataTimeMS.ToString());
                                 row.Add(dp.PPG1.ToString());
                                 row.Add(dp.PPG2.ToString());
-                                row.Add(dp.CP.ToString());
+                                row.Add(dp.CP.ToString("###.##"));
                                 writer.WriteRow(row);
                             }
                         }
@@ -656,24 +666,39 @@ namespace PHTManager
 
         private void targetPressureIncreaseButton_Click(object sender, EventArgs e)
         {
-            staticDataPoint.TargetCuffPressure += 5;
-            targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
-            rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureToRaw().ToString();
+            if (staticDataPoint.TargetCuffPressure < (StaticPHTMDataPoint.CPMax - 5))
+            {
+                staticDataPoint.TargetCuffPressure += 5;
+                targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
+                rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureRaw.ToString();
+            }
         }
 
         private void targetPressureDecreaseButton_Click(object sender, EventArgs e)
         {
-            staticDataPoint.TargetCuffPressure -= 5;
-            targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
-            rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureToRaw().ToString();
+            if (staticDataPoint.TargetCuffPressure > (StaticPHTMDataPoint.CPMin + 5))
+            {
+                staticDataPoint.TargetCuffPressure -= 5;
+                targetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressure.ToString();
+                rawTargetPressureDisplayLabel.Text = staticDataPoint.TargetCuffPressureRaw.ToString();
+            }
         }
 
         private void fillCuffButton_Click(object sender, EventArgs e)
         {
-            Byte[] buf = new Byte[3];
-            buf[0] = (Byte)pumpPIDNumericUpDown.Value;                          // Initial pump speed (PWM) setting
-            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);   // Target cuff pressure low byte
-            buf[2] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);   // Target cuff pressure high byte
+            Byte[] buf = new Byte[0x0C];
+            buf[0x00] = staticDataPoint.PumpSpeed;                              // Initial pump speed (PWM) setting
+            buf[0x01] = (Byte)(staticDataPoint.TargetCuffPressureRaw % 256);    // Target cuff pressure low byte
+            buf[0x02] = (Byte)(staticDataPoint.TargetCuffPressureRaw / 256);    // Target cuff pressure high byte
+            buf[0x03] = (Byte)(staticDataPoint.FillRateRaw % 256);              // Cuff fill rate low byte
+            buf[0x04] = (Byte)(staticDataPoint.FillRateRaw / 256);              // Cuff fill rate high byte
+            buf[0x05] = (Byte)(staticDataPoint.BleedRateRaw % 256);             // Cuff bleed rate low byte
+            buf[0x06] = (Byte)(staticDataPoint.BleedRateRaw / 256);             // Cuff bleed rate high byte
+            buf[0x07] = staticDataPoint.CPTRaw;                                 // Cuff pressure tolerance band
+            buf[0x08] = staticDataPoint.SSCPTRaw;                               // State switch cuff pressure tolerance
+            buf[0x09] = staticDataPoint.MaintenencePumpSpeed;                   // Maintenence pump speed
+            buf[0x0A] = 0x00;                                                   // Unused
+            buf[0x0B] = FwControlLoopDelay;                                     // Firmware control loop delay
             BuildCommMessage(FillCuffMsgType, buf);
             SendCommandMessage();
         }
@@ -688,8 +713,8 @@ namespace PHTManager
         {
             Byte[] buf = new Byte[3];
             buf[0] = 0xFF;                                                      // Turn pump OFF
-            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() % 256);   // Target cuff pressure low byte
-            buf[2] = (Byte)(staticDataPoint.TargetCuffPressureToRaw() / 256);   // Target cuff pressure high byte
+            buf[1] = (Byte)(staticDataPoint.TargetCuffPressureRaw % 256);   // Target cuff pressure low byte
+            buf[2] = (Byte)(staticDataPoint.TargetCuffPressureRaw / 256);   // Target cuff pressure high byte
             BuildCommMessage(BleedCuffMsgType, buf);
             SendCommandMessage();
         }
@@ -747,8 +772,6 @@ namespace PHTManager
             SendCommandMessage();
         }
 
-        #endregion Menu, toolbar and control event handlers
-
         private void uploadFirmwareButton_Click(object sender, EventArgs e)
         {
             String PHTMHostPath = Application.StartupPath;
@@ -801,5 +824,8 @@ namespace PHTManager
                 FirmwareVersionDisplayLabel.Text = "Not connected";
             }
         }
+
+        #endregion Menu, toolbar and control event handlers
+
     }
 }
